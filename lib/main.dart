@@ -24,6 +24,14 @@ class TiledGame extends FlameGame with ScaleDetector, TapDetector, KeyboardEvent
   late SpriteAnimationComponent player;
   final log = Logger('MyClassName');
 
+  late SpriteAnimation playerAnimationIdle;
+  late SpriteAnimation playerAnimationUp;
+  late SpriteAnimation playerAnimationLeft;
+  late SpriteAnimation playerAnimationRight;
+  late SpriteAnimation playerAnimationDown;
+
+  late JoystickComponent _joystick;
+
   @override
   Future<void> onLoad() async {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
@@ -38,29 +46,60 @@ class TiledGame extends FlameGame with ScaleDetector, TapDetector, KeyboardEvent
     );
     world.add(mapComponent);
 
+
+    /* _joystick = JoystickComponent(
+      size: 50,
+      margin: EdgeInsets.only(left: 20, bottom: 20),
+    );
+    world.add(_joystick); */
+
+
     // Load player sprite sheet
     final playerSpriteSheet = await Flame.images.load('player_sprite.png');
     final playerSpriteSheetData = SpriteSheet.fromColumnsAndRows(
       image: playerSpriteSheet,
-      columns: 9, // Number of columns in the sprite sheet
-      rows: 5,    // Number of rows in the sprite sheet
+      columns: 16, // Number of columns in the sprite sheet
+      rows: 1,    // Number of rows in the sprite sheet
     );
 
-
-    final playerAnimation = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1, // Adjust animation speed
+    playerAnimationIdle = playerSpriteSheetData.createAnimation(
+      stepTime: 0.1,
       row: 0,
       from: 0,
-      to: 2,         // Number of frames minus 1
+      to: 1,
+    );
+    playerAnimationUp = playerSpriteSheetData.createAnimation(
+      stepTime: 0.1,
+      row: 0,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationLeft = playerSpriteSheetData.createAnimation(
+      stepTime: 0.1,
+      row: 0,
+      from: 5,
+      to: 8,
+    );
+    playerAnimationRight = playerSpriteSheetData.createAnimation(
+      stepTime: 0.1,
+      row: 0,
+      from: 9,
+      to: 12,
+    );
+    playerAnimationDown = playerSpriteSheetData.createAnimation(
+      stepTime: 0.1,
+      row: 0,
+      from: 13,
+      to: 16,
     );
 
     // Create and add the player animation to the game
     player = SpriteAnimationComponent(
-      animation: playerAnimation,
+      animation: playerAnimationIdle,
       size: Vector2(32,32),
     );
-    player.x = 100;
-    player.y = 100;
+    player.x = 800;
+    player.y = 1100;
     world.add(player);
 
   }
@@ -70,14 +109,22 @@ class TiledGame extends FlameGame with ScaleDetector, TapDetector, KeyboardEvent
     // Example: Move the player based on key events
     if (event is RawKeyDownEvent) {
       if (keys.contains(LogicalKeyboardKey.arrowLeft)) {
-        player.x -= player.width;
+        player.animation = playerAnimationLeft;
+        player.x -= 8;
       } else if (keys.contains(LogicalKeyboardKey.arrowRight)) {
-        player.x += player.width;
+        player.animation = playerAnimationRight;
+        player.x += 8;
       } else if (keys.contains(LogicalKeyboardKey.arrowUp)) {
-        player.y -= player.height;
+        player.animation = playerAnimationUp;
+        player.y -= 8;
       } else if (keys.contains(LogicalKeyboardKey.arrowDown)) {
-        player.y += player.height;
+        player.animation = playerAnimationDown;
+        player.y += 8;
+      } else {
+        player.animation = playerAnimationIdle;
       }
+      camera.viewfinder.position.x = player.x;
+      camera.viewfinder.position.y = player.y;
     }
 
     // Return KeyEventResult.handled to indicate that the event has been handled
