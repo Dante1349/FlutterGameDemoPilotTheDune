@@ -28,3 +28,4 @@ flutter:
     - assets/tiles/testmap_ortho.tmx
     - assets/images/tileset-ortho.png
     - assets/images/player_sprite.png
+    - assets/images/ui.png

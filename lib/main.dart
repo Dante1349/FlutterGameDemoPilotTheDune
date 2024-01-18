@@ -14,7 +14,7 @@ void main() {
   );
 }
 
-class TiledGame extends FlameGame with ScaleDetector, TapDetector, KeyboardEvents {
+class TiledGame extends FlameGame with KeyboardEvents {
   late TiledComponent mapComponent;
 
   static const double _minZoom = 0.5;
@@ -47,11 +47,34 @@ class TiledGame extends FlameGame with ScaleDetector, TapDetector, KeyboardEvent
     world.add(mapComponent);
 
 
-    /* _joystick = JoystickComponent(
-      size: 50,
-      margin: EdgeInsets.only(left: 20, bottom: 20),
+    final image = await images.load('ui.png');
+    final sheet = SpriteSheet.fromColumnsAndRows(
+      image: image,
+      columns: 4,
+      rows: 2,
     );
-    world.add(_joystick); */
+
+    final knob = SpriteComponent(
+      sprite: sheet.getSpriteById(1),
+      size: Vector2(32, 32),
+    );
+    final background = SpriteComponent(
+      sprite: sheet.getSpriteById(0),
+      size: Vector2(32, 32),
+    );
+
+    knob.width = knob.width*5;
+    knob.height = knob.height*5;
+    background.width = background.width*5;
+    background.height = background.height*5;
+
+    _joystick = JoystickComponent(
+      knob: knob,
+      background: background,
+      size: 500,
+      margin: EdgeInsets.only(left: 100, bottom: 20),
+    );
+    world.add(_joystick);
 
 
     // Load player sprite sheet
