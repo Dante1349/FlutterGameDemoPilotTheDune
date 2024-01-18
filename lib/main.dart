@@ -125,6 +125,8 @@ class TiledGame extends FlameGame with KeyboardEvents {
     player.y = 1100;
     world.add(player);
 
+    camera.follow(player);
+    camera.viewfinder.anchor = Anchor.center;
   }
 
   @override
@@ -146,8 +148,6 @@ class TiledGame extends FlameGame with KeyboardEvents {
       } else {
         player.animation = playerAnimationIdle;
       }
-      camera.viewfinder.position.x = player.x;
-      camera.viewfinder.position.y = player.y;
     }
 
     // Return KeyEventResult.handled to indicate that the event has been handled
