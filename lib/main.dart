@@ -2,26 +2,30 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
+import 'package:tile_map/world_object.dart';
+
+import 'player.dart';
 
 void main() {
-   runApp(
+  runApp(
     GameWidget(game: TiledGame()),
   );
 }
 
-class TiledGame extends FlameGame with KeyboardEvents {
+class TiledGame extends FlameGame
+    with KeyboardEvents, TapDetector, HasCollisionDetection {
   late TiledComponent mapComponent;
 
   static const double _minZoom = 0.5;
   static const double _maxZoom = 2.0;
   double _startZoom = _minZoom;
 
-  late SpriteAnimationComponent player;
   final log = Logger('MyClassName');
 
   late SpriteAnimation playerAnimationIdle;
@@ -31,10 +35,12 @@ class TiledGame extends FlameGame with KeyboardEvents {
   late SpriteAnimation playerAnimationDown;
 
   late JoystickComponent _joystick;
+  late JoystickPlayer _player;
 
   @override
   Future<void> onLoad() async {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    Flame.device.fullScreen();
+    Flame.device.setLandscape();
 
     camera.viewfinder
       ..zoom = _startZoom
@@ -44,8 +50,8 @@ class TiledGame extends FlameGame with KeyboardEvents {
       'testmap_ortho.tmx',
       Vector2(32, 32),
     );
-    world.add(mapComponent);
 
+    world.add(mapComponent);
 
     final image = await images.load('ui.png');
     final sheet = SpriteSheet.fromColumnsAndRows(
@@ -62,11 +68,25 @@ class TiledGame extends FlameGame with KeyboardEvents {
       sprite: sheet.getSpriteById(0),
       size: Vector2(32, 32),
     );
+    final xButton = SpriteButtonComponent(
+        button: sheet.getSpriteById(2),
+        buttonDown: sheet.getSpriteById(6),
+        position: Vector2(500, 250),
+        size: Vector2(32, 32));
+    final yButton = SpriteButtonComponent(
+        button: sheet.getSpriteById(3),
+        buttonDown: sheet.getSpriteById(7),
+        position: Vector2(600, 250),
+        size: Vector2(32, 32));
 
-    knob.width = knob.width*5;
-    knob.height = knob.height*5;
-    background.width = background.width*5;
-    background.height = background.height*5;
+    knob.width = knob.width * 5;
+    knob.height = knob.height * 5;
+    background.width = background.width * 5;
+    background.height = background.height * 5;
+    xButton.width = xButton.width * 5;
+    xButton.height = xButton.height * 5;
+    yButton.width = yButton.width * 5;
+    yButton.height = yButton.height * 5;
 
     _joystick = JoystickComponent(
       knob: knob,
@@ -74,85 +94,42 @@ class TiledGame extends FlameGame with KeyboardEvents {
       size: 500,
       margin: EdgeInsets.only(left: 100, bottom: 20),
     );
-    world.add(_joystick);
+    _player = JoystickPlayer(_joystick);
+    world.add(_player);
 
+    camera.viewport.addAll([_joystick, xButton, yButton]);
 
-    // Load player sprite sheet
-    final playerSpriteSheet = await Flame.images.load('player_sprite.png');
-    final playerSpriteSheetData = SpriteSheet.fromColumnsAndRows(
-      image: playerSpriteSheet,
-      columns: 16, // Number of columns in the sprite sheet
-      rows: 1,    // Number of rows in the sprite sheet
-    );
-
-    playerAnimationIdle = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1,
-      row: 0,
-      from: 0,
-      to: 1,
-    );
-    playerAnimationUp = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1,
-      row: 0,
-      from: 1,
-      to: 4,
-    );
-    playerAnimationLeft = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1,
-      row: 0,
-      from: 5,
-      to: 8,
-    );
-    playerAnimationRight = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1,
-      row: 0,
-      from: 9,
-      to: 12,
-    );
-    playerAnimationDown = playerSpriteSheetData.createAnimation(
-      stepTime: 0.1,
-      row: 0,
-      from: 13,
-      to: 16,
-    );
-
-    // Create and add the player animation to the game
-    player = SpriteAnimationComponent(
-      animation: playerAnimationIdle,
-      size: Vector2(32,32),
-    );
-    player.x = 800;
-    player.y = 1100;
-    world.add(player);
-
-    camera.follow(player);
+    camera.follow(_player);
     camera.viewfinder.anchor = Anchor.center;
+    camera.viewfinder.zoom = 2;
+
+    spawnObjects(mapComponent.tileMap);
   }
 
-  @override
-  KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keys) {
-    // Example: Move the player based on key events
-    if (event is RawKeyDownEvent) {
-      if (keys.contains(LogicalKeyboardKey.arrowLeft)) {
-        player.animation = playerAnimationLeft;
-        player.x -= 8;
-      } else if (keys.contains(LogicalKeyboardKey.arrowRight)) {
-        player.animation = playerAnimationRight;
-        player.x += 8;
-      } else if (keys.contains(LogicalKeyboardKey.arrowUp)) {
-        player.animation = playerAnimationUp;
-        player.y -= 8;
-      } else if (keys.contains(LogicalKeyboardKey.arrowDown)) {
-        player.animation = playerAnimationDown;
-        player.y += 8;
-      } else {
-        player.animation = playerAnimationIdle;
-      }
-    }
+  // @override
+  // KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keys) {
+  //   // Example: Move the player based on key events
+  //   if (event is RawKeyDownEvent) {
+  //     if (keys.contains(LogicalKeyboardKey.arrowLeft)) {
+  //       player.animation = playerAnimationLeft;
+  //       player.x -= 8;
+  //     } else if (keys.contains(LogicalKeyboardKey.arrowRight)) {
+  //       player.animation = playerAnimationRight;
+  //       player.x += 8;
+  //     } else if (keys.contains(LogicalKeyboardKey.arrowUp)) {
+  //       player.animation = playerAnimationUp;
+  //       player.y -= 8;
+  //     } else if (keys.contains(LogicalKeyboardKey.arrowDown)) {
+  //       player.animation = playerAnimationDown;
+  //       player.y += 8;
+  //     } else {
+  //       player.animation = playerAnimationIdle;
+  //     }
+  //   }
 
-    // Return KeyEventResult.handled to indicate that the event has been handled
-    return KeyEventResult.handled;
-  }
+  //   // Return KeyEventResult.handled to indicate that the event has been handled
+  //   return KeyEventResult.handled;
+  // }
 
   @override
   void update(double dt) {
@@ -163,70 +140,12 @@ class TiledGame extends FlameGame with KeyboardEvents {
     // Update logic, collision detection, etc
   }
 
-  @override
-  void onScaleStart(ScaleStartInfo info) {
-    _startZoom = camera.viewfinder.zoom;
-  }
+  void spawnObjects(RenderableTiledMap tileMap) {
+    final worldObjects = tileMap.getLayer<ObjectGroup>("Object Layer 1");
 
-  void _processDrag(ScaleUpdateInfo info) {
-    final delta = info.delta.global;
-    final zoomDragFactor = 1.0 / _startZoom;
-    final currentPosition = camera.viewfinder.position;
-
-    camera.viewfinder.position = currentPosition.translated(
-      -delta.x * zoomDragFactor,
-      -delta.y * zoomDragFactor,
-    );
-  }
-
-  @override
-  void onScaleUpdate(ScaleUpdateInfo info) {
-    final currentScale = info.scale.global;
-
-    if (currentScale.isIdentity()) {
-      _processDrag(info);
-    } else {
-      _processScale(info, currentScale);
+    for (final worldObject in worldObjects!.objects) {
+      add(WorldObject(Vector2(worldObject.x, worldObject.y),
+          Vector2(worldObject.width, worldObject.height)));
     }
-  }
-
-  void _processScale(ScaleUpdateInfo info, Vector2 currentScale) {
-    final newZoom = _startZoom * ((currentScale.y + currentScale.x) / 2.0);
-    camera.viewfinder.zoom = newZoom.clamp(_minZoom, _maxZoom);
-  }
-
-  @override
-  void onScaleEnd(ScaleEndInfo info) {
-    _checkScaleBorders();
-    _checkDragBorders();
-  }
-
-  void _checkScaleBorders() {
-    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
-  }
-
-  void _checkDragBorders() {
-    final worldRect = camera.visibleWorldRect;
-
-    final currentPosition = camera.viewfinder.position;
-
-    final mapSize = Offset(mapComponent.width, mapComponent.height);
-
-    var xTranslate = 0.0;
-    var yTranslate = 0.0;
-
-    if (worldRect.topLeft.dx < 0.0) {
-      xTranslate = -worldRect.topLeft.dx;
-    } else if (worldRect.bottomRight.dx > mapSize.dx) {
-      xTranslate = mapSize.dx - worldRect.bottomRight.dx;
-    }
-
-    if (worldRect.topLeft.dy < 0.0) {
-      yTranslate = -worldRect.topLeft.dy;
-    } else if (worldRect.bottomRight.dy > mapSize.dy) {
-      yTranslate = mapSize.dy - worldRect.bottomRight.dy;
-    }
-
-    camera.viewfinder.position = currentPosition.translated(xTranslate, yTranslate);
   }
 }
