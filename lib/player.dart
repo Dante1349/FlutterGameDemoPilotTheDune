@@ -2,9 +2,13 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
+import 'package:logging/logging.dart';
+import 'package:tile_map/ant.dart';
 
 class JoystickPlayer extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
+  final logger = Logger('player.dart');
+
   /// Pixels/s
   double maxSpeed = 150.0;
   late final Vector2 _lastSize = size.clone();
@@ -20,12 +24,14 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   final JoystickComponent joystick;
 
-  JoystickPlayer(this.joystick)
-      : super(size: Vector2.all(32.0), anchor: Anchor.center);
+  JoystickPlayer(this.joystick, Vector2 startPosition)
+      : super(
+            size: Vector2.all(32.0),
+            anchor: Anchor.topLeft,
+            position: startPosition);
 
   @override
   Future<void> onLoad() async {
-
     final image = await game.images.load('pilot-Sheet.png');
     _playerSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
@@ -34,40 +40,42 @@ class JoystickPlayer extends SpriteAnimationComponent
     );
 
     playerAnimationIdle = _playerSpriteSheet.createAnimation(
-      stepTime: 0.1,
+      stepTime: 0.5,
       row: 0,
       from: 0,
       to: 1,
     );
     playerAnimationUp = _playerSpriteSheet.createAnimation(
-      stepTime: 0.1,
+      stepTime: .1,
       row: 0,
       from: 1,
       to: 4,
     );
     playerAnimationLeft = _playerSpriteSheet.createAnimation(
-      stepTime: 0.1,
+      stepTime: .1,
       row: 0,
       from: 9,
       to: 12,
     );
     playerAnimationRight = _playerSpriteSheet.createAnimation(
-      stepTime: 0.1,
+      stepTime: .1,
       row: 0,
       from: 5,
       to: 8,
     );
     playerAnimationDown = _playerSpriteSheet.createAnimation(
-      stepTime: 0.1,
+      stepTime: .1,
       row: 0,
       from: 13,
       to: 16,
     );
 
-    animation = playerAnimationIdle;
+    animation = playerAnimationDown;
 
-    add(RectangleHitbox(size: Vector2(16,16), position: Vector2(16,16), anchor: Anchor.center));
-    position = Vector2(game.camera.visibleWorldRect.width/2, game.camera.visibleWorldRect.height/2+400);
+    add(RectangleHitbox(
+        size: Vector2(16, 16),
+        position: Vector2(16, 16),
+        anchor: Anchor.center));
   }
 
   @override
@@ -76,27 +84,37 @@ class JoystickPlayer extends SpriteAnimationComponent
       _lastSize.setFrom(size);
       _lastTransform.setFrom(transform);
       _lastPosition.setFrom(position);
-      position.add(joystick.relativeDelta * maxSpeed * dt);
 
-      if(joystick.isDragged && joystick.direction == JoystickDirection.up) {
+      final bool isUp = (joystick.direction == JoystickDirection.up ||
+          joystick.direction == JoystickDirection.upLeft ||
+          joystick.direction == JoystickDirection.upRight);
+
+      final bool isDown = (joystick.direction == JoystickDirection.down ||
+          joystick.direction == JoystickDirection.downLeft ||
+          joystick.direction == JoystickDirection.downRight);
+      final bool isLeft = joystick.direction == JoystickDirection.left;
+      final bool isRight = joystick.direction == JoystickDirection.right;
+
+      final bool animateUp = isUp && animation != playerAnimationUp;
+
+      final bool animateDown = isDown && animation != playerAnimationDown;
+
+      final bool animateLeft = isLeft && animation != playerAnimationLeft;
+
+      final bool animateRight = isRight && animation != playerAnimationRight;
+
+      super.update(dt);
+      if (animateUp) {
         animation = playerAnimationUp;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.upLeft) {
-        animation = playerAnimationLeft;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.upRight) {
-        animation = playerAnimationRight;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.right) {
-        animation = playerAnimationRight;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.down) {
+      } else if (animateDown) {
         animation = playerAnimationDown;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.downLeft) {
+      } else if (animateLeft) {
         animation = playerAnimationLeft;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.downRight) {
+      } else if (animateRight) {
         animation = playerAnimationRight;
-      } else if (joystick.isDragged && joystick.direction == JoystickDirection.left) {
-        animation = playerAnimationLeft;
-      } else {
-        animation = playerAnimationIdle;
       }
+
+      position.add(joystick.relativeDelta * maxSpeed * dt);
     }
   }
 
@@ -105,7 +123,22 @@ class JoystickPlayer extends SpriteAnimationComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
+    if (other is Ant) {
+      x = 0;
+      y = 0;
+    }
+
+    if (intersectionPoints.length == 2) {
+      final mid =
+          (intersectionPoints.elementAt(0) + intersectionPoints.elementAt(1)) /
+              2;
+
+      final collisionVector = absoluteCenter - mid;
+      double penetrationDepth = (size.x / 2) - collisionVector.length;
+
+      collisionVector.normalize();
+      position += collisionVector.scaled(penetrationDepth);
+    }
     super.onCollisionStart(intersectionPoints, other);
-    position.setFrom(_lastPosition);
   }
 }

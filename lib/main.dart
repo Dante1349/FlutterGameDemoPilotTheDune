@@ -1,14 +1,12 @@
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flame_tiled_utils/flame_tiled_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
+import 'package:tile_map/ant.dart';
 import 'package:tile_map/world_object.dart';
 
 import 'player.dart';
@@ -27,7 +25,7 @@ class TiledGame extends FlameGame
   static const double _maxZoom = 2.0;
   double _startZoom = _minZoom;
 
-  final log = Logger('MyClassName');
+  final logger = Logger('main.dart');
 
   late SpriteAnimation playerAnimationIdle;
   late SpriteAnimation playerAnimationUp;
@@ -37,6 +35,7 @@ class TiledGame extends FlameGame
 
   late JoystickComponent _joystick;
   late JoystickPlayer _player;
+  late List<Ant> _ants = List.empty();
 
   @override
   Future<void> onLoad() async {
@@ -74,15 +73,15 @@ class TiledGame extends FlameGame
     final xButton = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
         buttonDown: sheet.getSpriteById(12),
-        position: Vector2(camera.viewport.size.x-200, camera.viewport.size.y-200),
-        size: Vector2(32, 32)
-    );
+        position:
+            Vector2(camera.viewport.size.x - 200, camera.viewport.size.y - 200),
+        size: Vector2(32, 32));
     final yButton = SpriteButtonComponent(
         button: sheet.getSpriteById(6),
         buttonDown: sheet.getSpriteById(13),
-        position: Vector2(camera.viewport.size.x-350, camera.viewport.size.y-150),
-        size: Vector2(32, 32)
-    );
+        position:
+            Vector2(camera.viewport.size.x - 350, camera.viewport.size.y - 150),
+        size: Vector2(32, 32));
 
     knob.width = knob.width * 5;
     knob.height = knob.height * 5;
@@ -99,16 +98,15 @@ class TiledGame extends FlameGame
       size: 500,
       margin: EdgeInsets.only(left: 100, bottom: 20),
     );
-    _player = JoystickPlayer(_joystick);
-    world.add(_player);
 
     camera.viewport.addAll([_joystick, xButton, yButton]);
 
-    camera.follow(_player);
     camera.viewfinder.anchor = Anchor.center;
     camera.viewfinder.zoom = 2;
 
+    spawnPlayer(mapComponent.tileMap);
     spawnObjects(mapComponent.tileMap);
+    spawnAnts(mapComponent.tileMap);
   }
 
   // @override
@@ -140,23 +138,30 @@ class TiledGame extends FlameGame
   void update(double dt) {
     super.update(dt);
 
-    log.info("udpate");
-
     // Update logic, collision detection, etc
   }
 
-  void spawnObjects(RenderableTiledMap tileMap) {
-    // TileProcessor.processTileType(tileMap: tileMap, processorByType: <String, TileProcessorFunc>{
-    //     '': ((tile, position, size) {
-    //       add(WorldObject(tile.getCollisionRect()!.position, tile.getCollisionRect()!.size));
-    //       return Future(() => null);
-    //     })
-    // }, layersToLoad: [""]);
+  void spawnPlayer(RenderableTiledMap tileMap) {
+    final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_player");
+    final startTile = objectGroup!.objects.first;
+    final startPosition = Vector2(startTile.x, startTile.y);
+    _player = JoystickPlayer(_joystick, startPosition);
+    world.add(_player);
+    camera.follow(_player);
+  }
 
-    final objectGroup =  tileMap.getLayer<ObjectGroup>("objects");
-    for(final tile in objectGroup!.objects) {
-      add(WorldObject(Vector2(tile.x,tile.y), Vector2(tile.width, tile.height)));
+  void spawnAnts(RenderableTiledMap tileMap) {
+    final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_ants");
+    for (final tile in objectGroup!.objects) {
+      world.add(Ant(Vector2(tile.x, tile.y)));
     }
-  
+  }
+
+  void spawnObjects(RenderableTiledMap tileMap) {
+    final objectGroup = tileMap.getLayer<ObjectGroup>("objects");
+    for (final tile in objectGroup!.objects) {
+      add(WorldObject(
+          Vector2(tile.x, tile.y), Vector2(tile.width, tile.height)));
+    }
   }
 }
