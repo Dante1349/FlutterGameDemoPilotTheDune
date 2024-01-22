@@ -14,7 +14,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   /// Pixels/s
   double maxSpeed = 150.0;
-  late Vector2 _lastDirection;
+  Vector2 _lastDirection = Vector2(1, 0);
   late final SpriteSheet _playerSpriteSheet;
 
   late SpriteAnimation playerAnimationIdle;
@@ -71,7 +71,7 @@ class JoystickPlayer extends SpriteAnimationComponent
       to: 16,
     );
 
-    animation = playerAnimationDown;
+    animation = playerAnimationRight;
 
     add(RectangleHitbox(
         size: Vector2(16, 16),
@@ -122,9 +122,8 @@ class JoystickPlayer extends SpriteAnimationComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    if (other is Ant) {
-      x = 0;
-      y = 0;
+    if (other is  Bullet) {
+      return;
     }
 
     if (intersectionPoints.length == 2) {
@@ -142,9 +141,7 @@ class JoystickPlayer extends SpriteAnimationComponent
   }
 
   void shoot() {
-    print(x.toString() + ","+ y.toString());
     final bullet = Bullet(absoluteCenter, _lastDirection);
-    log("bullet");
     gameRef.world.add(bullet);
   }
 }

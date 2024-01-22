@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
+import 'package:tile_map/bullet.dart';
 
 class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   final logger = Logger('ant.dart');
@@ -93,6 +94,10 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
+    if (other is Bullet) {
+      gameRef.world.remove(this);
+    }
+
     movingToX = !movingToX;
     movingToY = !movingToY;
     if (intersectionPoints.length == 2) {

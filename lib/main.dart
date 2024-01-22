@@ -39,14 +39,13 @@ class TiledGame extends FlameGame
 
   late JoystickComponent _joystick;
   late JoystickPlayer _player;
-  late List<Ant> _ants = List.empty();
 
   @override
   Future<void> onLoad() async {
     Flame.device.fullScreen();
     Flame.device.setLandscape();
 
-    super.debugMode=true;
+    //super.debugMode=true;
 
     camera.viewfinder
       ..zoom = _startZoom
