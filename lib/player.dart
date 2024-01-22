@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/ant.dart';
+import 'package:tile_map/bullet.dart';
 
 class JoystickPlayer extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
@@ -11,9 +14,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   /// Pixels/s
   double maxSpeed = 150.0;
-  late final Vector2 _lastSize = size.clone();
-  late final Transform2D _lastTransform = transform.clone();
-  late final Vector2 _lastPosition = position.clone();
+  late Vector2 _lastDirection;
   late final SpriteSheet _playerSpriteSheet;
 
   late SpriteAnimation playerAnimationIdle;
@@ -81,9 +82,7 @@ class JoystickPlayer extends SpriteAnimationComponent
   @override
   void update(double dt) {
     if (!joystick.delta.isZero() && activeCollisions.isEmpty) {
-      _lastSize.setFrom(size);
-      _lastTransform.setFrom(transform);
-      _lastPosition.setFrom(position);
+      _lastDirection=joystick.relativeDelta;
 
       final bool isUp = (joystick.direction == JoystickDirection.up ||
           joystick.direction == JoystickDirection.upLeft ||
@@ -140,5 +139,12 @@ class JoystickPlayer extends SpriteAnimationComponent
       position += collisionVector.scaled(penetrationDepth);
     }
     super.onCollisionStart(intersectionPoints, other);
+  }
+
+  void shoot() {
+    print(x.toString() + ","+ y.toString());
+    final bullet = Bullet(absoluteCenter, _lastDirection);
+    log("bullet");
+    gameRef.world.add(bullet);
   }
 }

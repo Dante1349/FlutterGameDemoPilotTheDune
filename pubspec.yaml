@@ -29,5 +29,6 @@ flutter:
     - assets/tiles/testmap_ortho.tmx
     - assets/images/tileset-ortho.png
     - assets/images/pilot-Sheet.png
+    - assets/images/bullet_basic.png
     - assets/images/ant-spritesheet.png
     - assets/images/ui.png

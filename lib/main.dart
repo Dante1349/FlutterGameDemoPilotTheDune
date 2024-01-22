@@ -1,4 +1,8 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -18,7 +22,7 @@ void main() {
 }
 
 class TiledGame extends FlameGame
-    with KeyboardEvents, TapDetector, HasCollisionDetection {
+    with KeyboardEvents, HasCollisionDetection {
   late TiledComponent mapComponent;
 
   static const double _minZoom = 0.5;
@@ -42,7 +46,7 @@ class TiledGame extends FlameGame
     Flame.device.fullScreen();
     Flame.device.setLandscape();
 
-    //super.debugMode=true;
+    super.debugMode=true;
 
     camera.viewfinder
       ..zoom = _startZoom
@@ -73,12 +77,14 @@ class TiledGame extends FlameGame
     final xButton = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
         buttonDown: sheet.getSpriteById(12),
+        onPressed: () =>print("button presssed"),
         position:
             Vector2(camera.viewport.size.x - 200, camera.viewport.size.y - 200),
         size: Vector2(32, 32));
     final yButton = SpriteButtonComponent(
         button: sheet.getSpriteById(6),
         buttonDown: sheet.getSpriteById(13),
+        onPressed: () => _player.shoot(),
         position:
             Vector2(camera.viewport.size.x - 350, camera.viewport.size.y - 150),
         size: Vector2(32, 32));
