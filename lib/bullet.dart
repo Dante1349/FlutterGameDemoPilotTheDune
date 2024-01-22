@@ -7,8 +7,8 @@ class Bullet extends SpriteComponent with HasGameRef {
   late Vector2 _direction;
 
   Bullet(Vector2 position, Vector2 direction)
-      : super(position: position, size: Vector2(3, 3), anchor: Anchor.topLeft) {
-    add(RectangleHitbox(size: Vector2(3, 3), position: Vector2(0, 0)));
+      : super(position: position, size: Vector2(5, 5), anchor: Anchor.topLeft) {
+    add(RectangleHitbox(size: Vector2(5, 5), position: Vector2(0, 0)));
     _direction = direction;
   }
 
@@ -22,6 +22,6 @@ class Bullet extends SpriteComponent with HasGameRef {
   @override
   Future<void> onLoad() async {
     final image = await game.images.load('bullet_basic.png');
-    sprite = Sprite(image, srcPosition: Vector2(0, 0), srcSize: Vector2(3, 3));
+    sprite = Sprite(image, srcPosition: Vector2(0, 0), srcSize: Vector2(5, 5));
   }
 }
