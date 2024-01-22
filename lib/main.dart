@@ -1,8 +1,4 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -10,9 +6,12 @@ import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:tile_map/alien.dart';
 import 'package:tile_map/ant.dart';
+import 'package:tile_map/laser_gun.dart';
 import 'package:tile_map/world_object.dart';
 
+import 'item.dart';
 import 'player.dart';
 
 void main() {
@@ -21,8 +20,7 @@ void main() {
   );
 }
 
-class TiledGame extends FlameGame
-    with KeyboardEvents, HasCollisionDetection {
+class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   late TiledComponent mapComponent;
 
   static const double _minZoom = 0.5;
@@ -39,6 +37,8 @@ class TiledGame extends FlameGame
 
   late JoystickComponent _joystick;
   late JoystickPlayer _player;
+
+  final List<Item> _items = [];
 
   @override
   Future<void> onLoad() async {
@@ -76,7 +76,7 @@ class TiledGame extends FlameGame
     final xButton = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
         buttonDown: sheet.getSpriteById(12),
-        onPressed: () =>print("button presssed"),
+        onPressed: () => print("button presssed"),
         position:
             Vector2(camera.viewport.size.x - 200, camera.viewport.size.y - 200),
         size: Vector2(32, 32));
@@ -111,6 +111,8 @@ class TiledGame extends FlameGame
 
     spawnPlayer(mapComponent.tileMap);
     spawnObjects(mapComponent.tileMap);
+    spawnItems(mapComponent.tileMap);
+    spawnAliens(mapComponent.tileMap);
     spawnAnts(mapComponent.tileMap);
   }
 
@@ -155,10 +157,27 @@ class TiledGame extends FlameGame
     camera.follow(_player);
   }
 
+  void spawnItems(RenderableTiledMap tileMap) {
+    final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_items");
+    final startTile = objectGroup!.objects.first;
+    final startPosition = Vector2(startTile.x, startTile.y);
+    //_items.add(LaserGun(startPosition));
+    world.add(LaserGun(startPosition));
+  }
+
   void spawnAnts(RenderableTiledMap tileMap) {
     final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_ants");
     for (final tile in objectGroup!.objects) {
       world.add(Ant(Vector2(tile.x, tile.y)));
+    }
+  }
+
+  void spawnAliens(RenderableTiledMap tileMap) {
+    final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_aliens");
+    print(objectGroup.toString());
+    for (final tile in objectGroup!.objects) {
+      print("add alien");
+      world.add(Alien(Vector2(tile.x, tile.y)));
     }
   }
 

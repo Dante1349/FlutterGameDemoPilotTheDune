@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/ant.dart';
 import 'package:tile_map/bullet.dart';
+import 'package:tile_map/laser_gun.dart';
 
 class JoystickPlayer extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
@@ -15,7 +13,7 @@ class JoystickPlayer extends SpriteAnimationComponent
   /// Pixels/s
   double maxSpeed = 150.0;
   Vector2 _lastDirection = Vector2(1, 0);
-  late final SpriteSheet _playerSpriteSheet;
+  late SpriteSheet _playerSpriteSheet;
 
   late SpriteAnimation playerAnimationIdle;
   late SpriteAnimation playerAnimationUp;
@@ -25,6 +23,8 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   final JoystickComponent joystick;
 
+  bool _hasGun = false;
+
   JoystickPlayer(this.joystick, Vector2 startPosition)
       : super(
             size: Vector2.all(32.0),
@@ -33,45 +33,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   @override
   Future<void> onLoad() async {
-    final image = await game.images.load('pilot-Sheet.png');
-    _playerSpriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
-      columns: 16,
-      rows: 1,
-    );
-
-    playerAnimationIdle = _playerSpriteSheet.createAnimation(
-      stepTime: 0.5,
-      row: 0,
-      from: 0,
-      to: 1,
-    );
-    playerAnimationUp = _playerSpriteSheet.createAnimation(
-      stepTime: .1,
-      row: 0,
-      from: 1,
-      to: 4,
-    );
-    playerAnimationLeft = _playerSpriteSheet.createAnimation(
-      stepTime: .1,
-      row: 0,
-      from: 9,
-      to: 12,
-    );
-    playerAnimationRight = _playerSpriteSheet.createAnimation(
-      stepTime: .1,
-      row: 0,
-      from: 5,
-      to: 8,
-    );
-    playerAnimationDown = _playerSpriteSheet.createAnimation(
-      stepTime: .1,
-      row: 0,
-      from: 13,
-      to: 16,
-    );
-
-    animation = playerAnimationRight;
+    await loadAnimation();
 
     add(RectangleHitbox(
         size: Vector2(16, 16),
@@ -79,10 +41,51 @@ class JoystickPlayer extends SpriteAnimationComponent
         anchor: Anchor.center));
   }
 
+  Future<void> loadAnimation() async {
+    var image;
+    if (_hasGun) {
+      image = await game.images.load('pilot-gun-spritesheet.png');
+    } else {
+      image = await game.images.load('pilot-spritesheet.png');
+    }
+    _playerSpriteSheet = SpriteSheet.fromColumnsAndRows(
+      image: image,
+      columns: 4,
+      rows: 4,
+    );
+
+    playerAnimationUp = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 0,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationRight = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 1,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationDown = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 2,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationLeft = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 3,
+      from: 1,
+      to: 4,
+    );
+
+    animation = playerAnimationRight;
+  }
+
   @override
   void update(double dt) {
     if (!joystick.delta.isZero() && activeCollisions.isEmpty) {
-      _lastDirection=joystick.relativeDelta;
+      _lastDirection = joystick.relativeDelta;
 
       final bool isUp = (joystick.direction == JoystickDirection.up ||
           joystick.direction == JoystickDirection.upLeft ||
@@ -122,9 +125,17 @@ class JoystickPlayer extends SpriteAnimationComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    if (other is  Bullet) {
+    if (other is Bullet) {
       return;
-    }
+    } else if (other is LaserGun) {
+      _hasGun = true;
+      loadAnimation();
+      game.world.remove(other);
+      return;
+    } else if (other is Ant) {
+      game.world.remove(this);
+      return;
+    } 
 
     if (intersectionPoints.length == 2) {
       final mid =
@@ -141,7 +152,9 @@ class JoystickPlayer extends SpriteAnimationComponent
   }
 
   void shoot() {
-    final bullet = Bullet(absoluteCenter, _lastDirection);
-    gameRef.world.add(bullet);
+    if (_hasGun) {
+      final bullet = Bullet(absoluteCenter, _lastDirection);
+      gameRef.world.add(bullet);
+    }
   }
 }

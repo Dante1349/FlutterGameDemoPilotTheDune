@@ -28,7 +28,10 @@ flutter:
   assets:
     - assets/tiles/testmap_ortho.tmx
     - assets/images/tileset-ortho.png
-    - assets/images/pilot-Sheet.png
+    - assets/images/pilot-spritesheet.png
+    - assets/images/pilot-gun-spritesheet.png
+    - assets/images/laser-gun.png
     - assets/images/bullet_basic.png
+    - assets/images/alien-spritesheet.png
     - assets/images/ant-spritesheet.png
     - assets/images/ui.png
