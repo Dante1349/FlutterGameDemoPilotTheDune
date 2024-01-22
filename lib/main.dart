@@ -78,14 +78,14 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
         buttonDown: sheet.getSpriteById(12),
         onPressed: () => print("button presssed"),
         position:
-            Vector2(camera.viewport.size.x - 150, camera.viewport.size.y - 200),
+            Vector2(camera.viewport.size.x - 125, camera.viewport.size.y - 150),
         size: Vector2(32, 32));
     final yButton = SpriteButtonComponent(
         button: sheet.getSpriteById(6),
         buttonDown: sheet.getSpriteById(13),
         onPressed: () => _player.shoot(),
         position:
-            Vector2(camera.viewport.size.x - 300, camera.viewport.size.y - 150),
+            Vector2(camera.viewport.size.x - 225, camera.viewport.size.y - 100),
         size: Vector2(32, 32));
 
     knob.width = knob.width * 4;
