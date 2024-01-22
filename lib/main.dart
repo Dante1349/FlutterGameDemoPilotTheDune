@@ -78,30 +78,30 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
         buttonDown: sheet.getSpriteById(12),
         onPressed: () => print("button presssed"),
         position:
-            Vector2(camera.viewport.size.x - 200, camera.viewport.size.y - 200),
+            Vector2(camera.viewport.size.x - 150, camera.viewport.size.y - 200),
         size: Vector2(32, 32));
     final yButton = SpriteButtonComponent(
         button: sheet.getSpriteById(6),
         buttonDown: sheet.getSpriteById(13),
         onPressed: () => _player.shoot(),
         position:
-            Vector2(camera.viewport.size.x - 350, camera.viewport.size.y - 150),
+            Vector2(camera.viewport.size.x - 300, camera.viewport.size.y - 150),
         size: Vector2(32, 32));
 
-    knob.width = knob.width * 5;
-    knob.height = knob.height * 5;
-    background.width = background.width * 5;
-    background.height = background.height * 5;
-    xButton.width = xButton.width * 3;
-    xButton.height = xButton.height * 3;
-    yButton.width = yButton.width * 3;
-    yButton.height = yButton.height * 3;
+    knob.width = knob.width * 4;
+    knob.height = knob.height * 4;
+    background.width = background.width * 4;
+    background.height = background.height * 4;
+    xButton.width = xButton.width * 2;
+    xButton.height = xButton.height * 2;
+    yButton.width = yButton.width * 2;
+    yButton.height = yButton.height * 2;
 
     _joystick = JoystickComponent(
       knob: knob,
       background: background,
       size: 500,
-      margin: EdgeInsets.only(left: 100, bottom: 20),
+      margin: EdgeInsets.only(left: 80, bottom: 20),
     );
 
     camera.viewport.addAll([_joystick, xButton, yButton]);
@@ -176,7 +176,6 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_aliens");
     print(objectGroup.toString());
     for (final tile in objectGroup!.objects) {
-      print("add alien");
       world.add(Alien(Vector2(tile.x, tile.y)));
     }
   }
