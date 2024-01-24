@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/alien.dart';
 import 'package:tile_map/ant.dart';
+import 'package:tile_map/game_over.overlay.dart';
 import 'package:tile_map/laser_gun.dart';
+import 'package:tile_map/pause.overlay.dart';
 import 'package:tile_map/world_object.dart';
 
 import 'item.dart';
@@ -17,7 +19,14 @@ import 'player.dart';
 
 void main() {
   runApp(
-    GameWidget(game: TiledGame()),
+    GameWidget(
+      game: TiledGame(),
+      overlayBuilderMap: {
+        'GameOver': (BuildContext context, TiledGame game) =>
+            GameOverOverlay(game),
+        'Pause': (BuildContext context, TiledGame game) => PauseOverlay(game),
+      },
+    ),
   );
 }
 
@@ -27,12 +36,6 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   final double _startZoom = 0.5;
 
   final logger = Logger('main.dart');
-
-  late SpriteAnimation playerAnimationIdle;
-  late SpriteAnimation playerAnimationUp;
-  late SpriteAnimation playerAnimationLeft;
-  late SpriteAnimation playerAnimationRight;
-  late SpriteAnimation playerAnimationDown;
 
   late JoystickComponent _joystick;
   late JoystickPlayer _player;
@@ -61,7 +64,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     final image = await images.load('ui.png');
     final sheet = SpriteSheet.fromColumnsAndRows(
       image: image,
-      columns: 7,
+      columns: 8,
       rows: 2,
     );
 
@@ -75,17 +78,24 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     );
     final xButton = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
-        buttonDown: sheet.getSpriteById(12),
+        buttonDown: sheet.getSpriteById(13),
         onPressed: () => print("button presssed"),
         position:
             Vector2(camera.viewport.size.x - 125, camera.viewport.size.y - 150),
         size: Vector2(32, 32));
     final yButton = SpriteButtonComponent(
         button: sheet.getSpriteById(6),
-        buttonDown: sheet.getSpriteById(13),
+        buttonDown: sheet.getSpriteById(14),
         onPressed: () => _player.shoot(),
         position:
             Vector2(camera.viewport.size.x - 225, camera.viewport.size.y - 100),
+        size: Vector2(32, 32));
+
+    final pauseButton = SpriteButtonComponent(
+        button: sheet.getSpriteById(7),
+        buttonDown: sheet.getSpriteById(15),
+        onPressed: () => {overlays.add('Pause'), pauseEngine()},
+        position: Vector2(camera.viewport.size.x - 64 - 20, 20),
         size: Vector2(32, 32));
 
     knob.width = knob.width * 4;
@@ -96,6 +106,8 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     xButton.height = xButton.height * 2;
     yButton.width = yButton.width * 2;
     yButton.height = yButton.height * 2;
+    pauseButton.width = pauseButton.width * 2;
+    pauseButton.height = pauseButton.height * 2;
 
     _joystick = JoystickComponent(
       knob: knob,
@@ -116,7 +128,8 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     _lifeBar = LifeBar(_player.life);
     _lifeBar.position = Vector2(10, 10);
 
-    camera.viewport.addAll([_joystick, xButton, yButton, _lifeBar]);
+    camera.viewport
+        .addAll([_joystick, xButton, yButton, pauseButton, _lifeBar]);
   }
 
   // @override
@@ -148,6 +161,9 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   void update(double dt) {
     super.update(dt);
     _lifeBar.percentage = _player.life;
+    if (_player.life <= 0) {
+      overlays.add('GameOver');
+    }
   }
 
   void spawnPlayer(RenderableTiledMap tileMap) {
@@ -188,5 +204,13 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
       add(WorldObject(
           Vector2(tile.x, tile.y), Vector2(tile.width, tile.height)));
     }
+  }
+
+  restartGame() async {
+    await onLoad();
+  }
+
+  resume() {
+    resumeEngine();
   }
 }
