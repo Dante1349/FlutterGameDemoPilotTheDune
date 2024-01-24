@@ -12,6 +12,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   /// Pixels/s
   double maxSpeed = 150.0;
+  double life = 100.0;
   Vector2 _lastDirection = Vector2(1, 0);
   late SpriteSheet _playerSpriteSheet;
 
@@ -84,6 +85,9 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   @override
   void update(double dt) {
+    if (life <= 0) {
+      game.world.remove(this);
+    }
     if (!joystick.delta.isZero() && activeCollisions.isEmpty) {
       _lastDirection = joystick.relativeDelta;
 
@@ -133,9 +137,9 @@ class JoystickPlayer extends SpriteAnimationComponent
       game.world.remove(other);
       return;
     } else if (other is Ant) {
-      game.world.remove(this);
+      life -= 10.0;
       return;
-    } 
+    }
 
     if (intersectionPoints.length == 2) {
       final mid =
@@ -152,7 +156,7 @@ class JoystickPlayer extends SpriteAnimationComponent
   }
 
   void shoot() {
-    if (_hasGun) {
+    if (_hasGun && life > 0) {
       final bullet = Bullet(absoluteCenter, _lastDirection);
       gameRef.world.add(bullet);
     }

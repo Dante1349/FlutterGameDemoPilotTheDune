@@ -12,6 +12,7 @@ import 'package:tile_map/laser_gun.dart';
 import 'package:tile_map/world_object.dart';
 
 import 'item.dart';
+import 'life_bar.dart';
 import 'player.dart';
 
 void main() {
@@ -23,9 +24,7 @@ void main() {
 class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   late TiledComponent mapComponent;
 
-  static const double _minZoom = 0.5;
-  static const double _maxZoom = 2.0;
-  double _startZoom = _minZoom;
+  final double _startZoom = 0.5;
 
   final logger = Logger('main.dart');
 
@@ -37,6 +36,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
 
   late JoystickComponent _joystick;
   late JoystickPlayer _player;
+  late LifeBar _lifeBar;
 
   final List<Item> _items = [];
 
@@ -104,16 +104,19 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
       margin: EdgeInsets.only(left: 80, bottom: 20),
     );
 
-    camera.viewport.addAll([_joystick, xButton, yButton]);
-
-    camera.viewfinder.anchor = Anchor.center;
-    camera.viewfinder.zoom = 2;
-
     spawnPlayer(mapComponent.tileMap);
     spawnObjects(mapComponent.tileMap);
     spawnItems(mapComponent.tileMap);
     spawnAliens(mapComponent.tileMap);
     spawnAnts(mapComponent.tileMap);
+
+    camera.viewfinder.anchor = Anchor.center;
+    camera.viewfinder.zoom = 2;
+
+    _lifeBar = LifeBar(_player.life);
+    _lifeBar.position = Vector2(10, 10);
+
+    camera.viewport.addAll([_joystick, xButton, yButton, _lifeBar]);
   }
 
   // @override
@@ -144,8 +147,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   @override
   void update(double dt) {
     super.update(dt);
-
-    // Update logic, collision detection, etc
+    _lifeBar.percentage = _player.life;
   }
 
   void spawnPlayer(RenderableTiledMap tileMap) {
