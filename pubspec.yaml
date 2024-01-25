@@ -31,6 +31,7 @@ flutter:
     - assets/images/pilot-spritesheet.png
     - assets/images/pilot-gun-spritesheet.png
     - assets/images/laser-gun.png
+    - assets/images/moon-berry.png
     - assets/images/bullet_basic.png
     - assets/images/alien-spritesheet.png
     - assets/images/ant-spritesheet.png

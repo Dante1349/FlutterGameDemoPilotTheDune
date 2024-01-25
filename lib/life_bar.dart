@@ -16,7 +16,7 @@ class LifeBar extends PositionComponent {
     final blackOutline = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 4;
 
     final redFill = Paint()..color = Colors.red;
 

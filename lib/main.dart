@@ -10,11 +10,12 @@ import 'package:tile_map/alien.dart';
 import 'package:tile_map/ant.dart';
 import 'package:tile_map/game_over.overlay.dart';
 import 'package:tile_map/inventory.overlay.dart';
-import 'package:tile_map/laser_gun.dart';
+import 'package:tile_map/items/laser_gun.dart';
+import 'package:tile_map/items/moon_berry.dart';
 import 'package:tile_map/pause.overlay.dart';
 import 'package:tile_map/world_object.dart';
 
-import 'item.dart';
+import 'items/item.dart';
 import 'life_bar.dart';
 import 'player.dart';
 
@@ -195,10 +196,22 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
 
   void spawnItems(RenderableTiledMap tileMap) {
     final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_items");
-    final startTile = objectGroup!.objects.first;
-    final startPosition = Vector2(startTile.x, startTile.y);
+    _items.clear();
+    for(TiledObject tile in objectGroup!.objects) {
+      switch(tile.name) {
+        case 'laser_gun_spawn':
+          _items.add(LaserGun(Vector2(tile.x, tile.y)));
+          break;
+        case 'moon_berry_spawn':
+          _items.add(MoonBerry(Vector2(tile.x, tile.y)));
+          break;
+        default:
+          break;
+      }
+    }
     //_items.add(LaserGun(startPosition));
-    world.add(LaserGun(startPosition));
+    world.addAll(_items);
+    
   }
 
   void spawnAnts(RenderableTiledMap tileMap) {

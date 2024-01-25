@@ -1,7 +1,8 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:tile_map/world_object.dart';
 
-class Bullet extends SpriteComponent with HasGameRef {
+class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final double maxSpeed = 300.0;
 
   late Vector2 _direction;
@@ -23,5 +24,28 @@ class Bullet extends SpriteComponent with HasGameRef {
   Future<void> onLoad() async {
     final image = await game.images.load('bullet_basic.png');
     sprite = Sprite(image, srcPosition: Vector2(0, 0), srcSize: Vector2(5, 5));
+  }
+
+  @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is WorldObject) {
+      gameRef.world.remove(this);
+    }
+
+    if (intersectionPoints.length == 2) {
+      final mid =
+          (intersectionPoints.elementAt(0) + intersectionPoints.elementAt(1)) /
+              2;
+
+      final collisionVector = absoluteCenter - mid;
+      double penetrationDepth = (size.x / 2) - collisionVector.length;
+
+      collisionVector.normalize();
+      position += collisionVector.scaled(penetrationDepth);
+    }
+    super.onCollisionStart(intersectionPoints, other);
   }
 }

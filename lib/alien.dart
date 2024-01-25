@@ -95,7 +95,7 @@ class Alien extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks
     PositionComponent other,
   ) {
     if (other is Bullet) {
-      gameRef.world.remove(this);
+      return;
     }
 
     movingToX = !movingToX;

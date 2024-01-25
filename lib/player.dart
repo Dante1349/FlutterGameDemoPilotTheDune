@@ -5,7 +5,8 @@ import 'package:logging/logging.dart';
 import 'package:tile_map/ant.dart';
 import 'package:tile_map/bullet.dart';
 import 'package:tile_map/inventory.dart';
-import 'package:tile_map/laser_gun.dart';
+import 'package:tile_map/items/laser_gun.dart';
+import 'package:tile_map/items/moon_berry.dart';
 
 class JoystickPlayer extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
@@ -138,7 +139,14 @@ class JoystickPlayer extends SpriteAnimationComponent
       game.world.remove(other);
       return;
     } else if (other is Ant) {
-      life -= 10.0;
+      life -= 25.0;
+      return;
+    } else if (other is MoonBerry){
+      life += 10.0;
+      if (life > 100.0) {
+        life = 100.0;
+      }
+      game.world.remove(other);
       return;
     }
 

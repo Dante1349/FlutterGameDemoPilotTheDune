@@ -1,4 +1,4 @@
-import 'package:tile_map/item.dart';
+import 'package:tile_map/items/item.dart';
 
 class Inventory {
 
