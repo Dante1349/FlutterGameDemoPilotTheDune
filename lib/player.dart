@@ -140,7 +140,6 @@ class JoystickPlayer extends SpriteAnimationComponent
       return;
     } else if (other is Ant) {
       life -= 25.0;
-      return;
     } else if (other is MoonBerry){
       life += 10.0;
       if (life > 100.0) {

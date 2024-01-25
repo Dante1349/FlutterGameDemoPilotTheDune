@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/bullet.dart';
+import 'package:tile_map/player.dart';
 
 class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   final logger = Logger('ant.dart');
@@ -96,6 +97,8 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   ) {
     if (other is Bullet) {
       gameRef.world.remove(this);
+    } else if (other is JoystickPlayer) {
+      return;
     }
 
     movingToX = !movingToX;
