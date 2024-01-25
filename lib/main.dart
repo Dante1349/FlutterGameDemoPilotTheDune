@@ -51,7 +51,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     Flame.device.fullScreen();
     Flame.device.setLandscape();
 
-    //super.debugMode=true;
+    // super.debugMode=true;
 
     camera.viewfinder
       ..zoom = _startZoom
@@ -209,9 +209,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
           break;
       }
     }
-    //_items.add(LaserGun(startPosition));
     world.addAll(_items);
-    
   }
 
   void spawnAnts(RenderableTiledMap tileMap) {
