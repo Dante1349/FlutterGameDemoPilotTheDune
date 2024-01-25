@@ -98,7 +98,7 @@ class Alien extends SpriteAnimationComponent
   ) {
     if (other is Bullet) {
       return;
-    } else if (other is JoystickPlayer) {
+    } else if (other is Player) {
       return;
     }
 

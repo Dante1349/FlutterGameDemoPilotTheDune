@@ -41,7 +41,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   final logger = Logger('main.dart');
 
   late JoystickComponent _joystick;
-  late JoystickPlayer _player;
+  late Player _player;
   late LifeBar _lifeBar;
 
   final List<Item> _items = [];
@@ -189,7 +189,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_player");
     final startTile = objectGroup!.objects.first;
     final startPosition = Vector2(startTile.x, startTile.y);
-    _player = JoystickPlayer(_joystick, startPosition);
+    _player = Player(_joystick, startPosition);
     world.add(_player);
     camera.follow(_player);
   }
@@ -243,7 +243,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     resumeEngine();
   }
 
-  JoystickPlayer getPlayer() {
+  Player getPlayer() {
     return _player;
   }
 }

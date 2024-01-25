@@ -97,7 +97,7 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   ) {
     if (other is Bullet) {
       gameRef.world.remove(this);
-    } else if (other is JoystickPlayer) {
+    } else if (other is Player) {
       return;
     }
 

@@ -8,7 +8,7 @@ import 'package:tile_map/inventory.dart';
 import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
 
-class JoystickPlayer extends SpriteAnimationComponent
+class Player extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
   final logger = Logger('player.dart');
 
@@ -28,7 +28,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   final JoystickComponent joystick;
 
-  JoystickPlayer(this.joystick, Vector2 startPosition)
+  Player(this.joystick, Vector2 startPosition)
       : super(
             size: Vector2.all(32.0),
             anchor: Anchor.topLeft,
