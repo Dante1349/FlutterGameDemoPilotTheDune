@@ -3,8 +3,10 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/bullet.dart';
+import 'package:tile_map/player.dart';
 
-class Alien extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
+class Alien extends SpriteAnimationComponent
+    with HasGameRef, CollisionCallbacks {
   final logger = Logger('alien.dart');
   final String spriteSheetPath = 'alien-spritesheet.png';
 
@@ -95,6 +97,8 @@ class Alien extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks
     PositionComponent other,
   ) {
     if (other is Bullet) {
+      return;
+    } else if (other is JoystickPlayer) {
       return;
     }
 
