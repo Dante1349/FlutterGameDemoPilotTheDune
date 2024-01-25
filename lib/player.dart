@@ -4,11 +4,14 @@ import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/ant.dart';
 import 'package:tile_map/bullet.dart';
+import 'package:tile_map/inventory.dart';
 import 'package:tile_map/laser_gun.dart';
 
 class JoystickPlayer extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
   final logger = Logger('player.dart');
+
+  Inventory _inventory = Inventory();
 
   /// Pixels/s
   double maxSpeed = 150.0;
@@ -23,8 +26,6 @@ class JoystickPlayer extends SpriteAnimationComponent
   late SpriteAnimation playerAnimationDown;
 
   final JoystickComponent joystick;
-
-  bool _hasGun = false;
 
   JoystickPlayer(this.joystick, Vector2 startPosition)
       : super(
@@ -44,7 +45,7 @@ class JoystickPlayer extends SpriteAnimationComponent
 
   Future<void> loadAnimation() async {
     var image;
-    if (_hasGun) {
+    if (_inventory.hasItem<LaserGun>()) {
       image = await game.images.load('pilot-gun-spritesheet.png');
     } else {
       image = await game.images.load('pilot-spritesheet.png');
@@ -132,7 +133,7 @@ class JoystickPlayer extends SpriteAnimationComponent
     if (other is Bullet) {
       return;
     } else if (other is LaserGun) {
-      _hasGun = true;
+      _inventory.addItem(other);
       loadAnimation();
       game.world.remove(other);
       return;
@@ -156,9 +157,13 @@ class JoystickPlayer extends SpriteAnimationComponent
   }
 
   void shoot() {
-    if (_hasGun && life > 0) {
+    if (_inventory.hasItem<LaserGun>() && life > 0) {
       final bullet = Bullet(absoluteCenter, _lastDirection);
       gameRef.world.add(bullet);
     }
+  }
+
+  Inventory getInventory() {
+    return _inventory;
   }
 }

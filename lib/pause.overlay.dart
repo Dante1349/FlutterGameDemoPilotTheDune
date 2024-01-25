@@ -24,14 +24,22 @@ class PauseOverlay extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => {
-              print('Resume'),
               _game.overlays.remove('Pause'),
               _game.resume()
             },
             child: Text('Resume'),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => {
+              _game.overlays.remove('Pause'),
+              _game.restartGame(),
+              _game.resume()
+            },
+            child: Text('Restart'),
           ),
         ],
       )
