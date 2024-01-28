@@ -2,7 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
-import 'package:tile_map/ant.dart';
+import 'package:tile_map/enemies/ant.dart';
 import 'package:tile_map/bullet.dart';
 import 'package:tile_map/inventory.dart';
 import 'package:tile_map/items/laser_gun.dart';

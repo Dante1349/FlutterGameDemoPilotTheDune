@@ -73,14 +73,14 @@ class ScreenInput extends Component with HasGameRef {
         button: sheet.getSpriteById(7),
         buttonDown: sheet.getSpriteById(16),
         onPressed: () => pauseButtonStreamController.add(null),
-        position: Vector2(gameRef.camera.viewport.size.x - 64 - 20, 20),
+        position: Vector2(gameRef.camera.viewport.size.x - 64 - 10, 10),
         size: Vector2(32, 32));
 
     inventoryButtonSpriteComponent = SpriteButtonComponent(
         button: sheet.getSpriteById(8),
         buttonDown: sheet.getSpriteById(17),
         onPressed: () => inventoryButtonStreamController.add(null),
-        position: Vector2(gameRef.camera.viewport.size.x - 2 * 64 - 2 * 20, 20),
+        position: Vector2(gameRef.camera.viewport.size.x - 2 * 64 - 2 * 10, 10),
         size: Vector2(32, 32));
 
     xButtonSpriteComponent.width = xButtonSpriteComponent.width * 2;

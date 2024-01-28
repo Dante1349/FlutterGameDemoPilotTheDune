@@ -9,17 +9,17 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:tile_map/alien.dart';
-import 'package:tile_map/ant.dart';
-import 'package:tile_map/game_over.overlay.dart';
-import 'package:tile_map/inventory.overlay.dart';
+import 'package:tile_map/enemies/ant.dart';
+import 'package:tile_map/overlays/game_over.overlay.dart';
+import 'package:tile_map/overlays/inventory.overlay.dart';
 import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
-import 'package:tile_map/pause.overlay.dart';
-import 'package:tile_map/screen_input.dart';
+import 'package:tile_map/overlays/pause.overlay.dart';
+import 'package:tile_map/ui/screen_input.dart';
 import 'package:tile_map/world_object.dart';
 
 import 'items/item.dart';
-import 'life_bar.dart';
+import 'ui/life_bar.dart';
 import 'player.dart';
 
 void main() {
