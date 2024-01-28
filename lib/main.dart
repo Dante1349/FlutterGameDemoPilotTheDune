@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -49,6 +51,10 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
 
   late ScreenInput screenInput;
 
+  late StreamSubscription<void> yButtonSubscription;
+  
+  late StreamSubscription<void> xButtonSubscription;
+
   @override
   Future<void> onLoad() async {
     Flame.device.fullScreen();
@@ -77,11 +83,11 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     spawnAliens(mapComponent.tileMap);
     spawnAnts(mapComponent.tileMap);
 
-    screenInput.yButton.listen((event) {
+    yButtonSubscription = screenInput.yButton.listen((event) {
       _player.shoot();
     });
 
-    screenInput.xButton.listen((event) {
+    xButtonSubscription = screenInput.xButton.listen((event) {
       _player.shoot();
     });
 
@@ -179,7 +185,13 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     }
   }
 
+  void destroy(){
+    yButtonSubscription.cancel();
+    xButtonSubscription.cancel();
+  }
+
   restartGame() async {
+    destroy();
     await onLoad();
   }
 
