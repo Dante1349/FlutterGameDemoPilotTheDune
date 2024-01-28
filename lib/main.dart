@@ -122,10 +122,10 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    //_lifeBar.percentage = _player.life;
-    // if (_player.life <= 0) {
-    //   overlays.add('GameOver');
-    // }
+    _lifeBar.percentage = _player.life;
+    if (_player.life <= 0) {
+      overlays.add('GameOver');
+    }
   }
 
   void spawnPlayer(RenderableTiledMap tileMap) async {
