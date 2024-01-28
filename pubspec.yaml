@@ -15,6 +15,7 @@ dependencies:
   flame_tiled_utils: ^1.1.1
   logging: ^1.2.0
   joystick: ^1.0.0
+  rxdart: ^0.27.7
   
 
 dev_dependencies:
