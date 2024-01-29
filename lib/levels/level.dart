@@ -12,10 +12,10 @@ import 'package:tile_map/world_object.dart';
 class Level extends Component with HasGameRef {
   final String mapPath;
   final ScreenInput screenInput;
-  
+
   bool gameOver = false;
   List<Item> items = [];
-  
+
   late TiledComponent mapComponent;
   late Player player;
 
@@ -48,12 +48,17 @@ class Level extends Component with HasGameRef {
   }
 
   destroy() {
-    gameRef.world.remove(mapComponent);
-    gameRef.remove(screenInput);
-    gameRef.remove(this);
+    for (var element in gameRef.world.children) {
+      gameRef.world.remove(element);
+    }
 
-    if(gameRef.world.contains(player)){
-      gameRef.world.remove(player);
+    print("------------------------world------------------------");
+    for (var element in gameRef.world.children) {
+      print(element);
+    }
+    print("------------------------game------------------------");
+    for (var element in gameRef.children) {
+      print(element);
     }
   }
 

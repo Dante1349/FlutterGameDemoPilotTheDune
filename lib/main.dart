@@ -67,7 +67,8 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     yButtonSubscription.cancel();
     xButtonSubscription.cancel();
     level.destroy();
-    //level.load();
+    
+    super.onDetach();
     await onLoad();
   }
 
