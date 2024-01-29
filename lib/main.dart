@@ -28,8 +28,6 @@ void main() {
 }
 
 class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
-  late TiledComponent mapComponent;
-
   late ScreenInput screenInput;
 
   late StreamSubscription<void> yButtonSubscription;
@@ -67,7 +65,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     yButtonSubscription.cancel();
     xButtonSubscription.cancel();
     level.destroy();
-    
+
     super.onDetach();
     await onLoad();
   }
