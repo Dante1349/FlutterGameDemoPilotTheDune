@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:tile_map/alien.dart';
@@ -19,6 +21,10 @@ class Level extends Component with HasGameRef {
   late TiledComponent mapComponent;
   late Player player;
 
+  late StreamSubscription<void> yButtonSubscription;
+  
+  late StreamSubscription<void> xButtonSubscription;
+
   Level(this.mapPath, this.screenInput);
 
   load() async {
@@ -36,6 +42,15 @@ class Level extends Component with HasGameRef {
 
     gameRef.camera.viewfinder.anchor = Anchor.center;
     gameRef.camera.viewfinder.zoom = 2;
+
+    yButtonSubscription = screenInput.yButton.listen((event) {
+      print("yButton pressed");
+      player.shoot();
+    });
+
+    xButtonSubscription = screenInput.xButton.listen((event) {
+      print("xButton pressed");
+    });
   }
 
   @override
@@ -48,17 +63,10 @@ class Level extends Component with HasGameRef {
   }
 
   destroy() {
+    yButtonSubscription.cancel();
+    xButtonSubscription.cancel();
     for (var element in gameRef.world.children) {
       gameRef.world.remove(element);
-    }
-
-    print("------------------------world------------------------");
-    for (var element in gameRef.world.children) {
-      print(element);
-    }
-    print("------------------------game------------------------");
-    for (var element in gameRef.children) {
-      print(element);
     }
   }
 

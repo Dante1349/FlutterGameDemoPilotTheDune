@@ -7,6 +7,7 @@ import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:tile_map/levels/level.dart';
+import 'package:tile_map/levels/test-level.dart';
 import 'package:tile_map/overlays/game_over.overlay.dart';
 import 'package:tile_map/overlays/inventory.overlay.dart';
 import 'package:tile_map/overlays/pause.overlay.dart';
@@ -29,11 +30,6 @@ void main() {
 
 class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   late ScreenInput screenInput;
-
-  late StreamSubscription<void> yButtonSubscription;
-
-  late StreamSubscription<void> xButtonSubscription;
-
   late Level level;
 
   @override
@@ -47,23 +43,12 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     add(screenInput);
     await screenInput.load();
 
-    level = Level('testmap_ortho.tmx', screenInput);
+    level = TestLevel(screenInput);
     add(level);
     await level.load();
-
-    yButtonSubscription = screenInput.yButton.listen((event) {
-      print("yButton pressed");
-      level.player.shoot();
-    });
-
-    xButtonSubscription = screenInput.xButton.listen((event) {
-      print("xButton pressed");
-    });
   }
 
   restartGame() async {
-    yButtonSubscription.cancel();
-    xButtonSubscription.cancel();
     level.destroy();
 
     super.onDetach();
