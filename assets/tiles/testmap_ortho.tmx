@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="287">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="336">
  <editorsettings>
   <export target="testmap_ortho..tmx" format="tmx"/>
  </editorsettings>
@@ -61,7 +61,7 @@
    </wangset>
   </wangsets>
  </tileset>
- <layer id="1" name="terrain" width="64" height="64">
+ <layer id="1" name="sprite_layer_background" width="64" height="64">
   <data encoding="csv">
 882,883,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,885,886,882,883,765,766,964,964,762,763,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,884,885,886,
 922,923,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,925,926,922,923,805,806,964,964,802,803,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,924,925,926,
@@ -129,7 +129,7 @@
 1042,1043,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1044,1045,1046
 </data>
  </layer>
- <layer id="5" name="objects" width="64" height="64">
+ <layer id="5" name="sprite_layer_objects" width="64" height="64">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -197,7 +197,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="8" name="objects">
+ <objectgroup id="14" name="layer_connections">
+  <object id="290" name="alien_cave_1" x="736" y="288" width="32" height="32"/>
+  <object id="296" name="exit_north" x="800" y="-32" width="128" height="32"/>
+ </objectgroup>
+ <objectgroup id="8" name="layer_walls">
   <object id="104" x="0" y="0" width="64" height="2048"/>
   <object id="105" x="64" y="0" width="768" height="64"/>
   <object id="106" x="896" y="0" width="1152" height="64"/>
@@ -311,55 +315,41 @@
   <object id="242" x="1920" y="640" width="32" height="32"/>
   <object id="243" x="1760" y="608" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="11" name="spawn_items">
-  <object id="278" name="laser_gun_spawn" x="576" y="96" width="32" height="32"/>
-  <object id="284" name="moon_berry_spawn" x="1568" y="576" width="32" height="32"/>
-  <object id="286" name="moon_berry_spawn" x="1600" y="1664" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="9" name="spawn_ants">
-  <object id="150" x="416" y="640" width="32" height="32"/>
-  <object id="152" x="192" y="864" width="32" height="32"/>
-  <object id="153" x="480" y="896" width="32" height="32"/>
-  <object id="154" x="384" y="1056" width="32" height="32"/>
-  <object id="245" x="800" y="672" width="32" height="32"/>
-  <object id="246" x="800" y="992" width="32" height="32"/>
-  <object id="247" x="960" y="864" width="32" height="32"/>
-  <object id="248" x="1184" y="864" width="32" height="32"/>
-  <object id="249" x="1248" y="672" width="32" height="32"/>
-  <object id="250" x="1440" y="1024" width="32" height="32"/>
-  <object id="251" x="1344" y="1344" width="32" height="32"/>
-  <object id="252" x="1056" y="1408" width="32" height="32"/>
-  <object id="253" x="800" y="1312" width="32" height="32"/>
-  <object id="254" x="416" y="1440" width="32" height="32"/>
-  <object id="255" x="512" y="1344" width="32" height="32"/>
-  <object id="256" x="256" y="1344" width="32" height="32"/>
-  <object id="257" x="224" y="1728" width="32" height="32"/>
-  <object id="258" x="800" y="1728" width="32" height="32"/>
-  <object id="259" x="576" y="1856" width="32" height="32"/>
-  <object id="260" x="800" y="1824" width="32" height="32"/>
-  <object id="261" x="1056" y="1760" width="32" height="32"/>
-  <object id="262" x="1312" y="1728" width="32" height="32"/>
-  <object id="263" x="1504" y="1728" width="32" height="32"/>
-  <object id="264" x="1248" y="1888" width="32" height="32"/>
-  <object id="265" x="992" y="1920" width="32" height="32"/>
-  <object id="266" x="1856" y="1920" width="32" height="32"/>
-  <object id="267" x="1856" y="1696" width="32" height="32"/>
-  <object id="268" x="1856" y="1536" width="32" height="32"/>
-  <object id="269" x="1856" y="1376" width="32" height="32"/>
-  <object id="270" x="1824" y="1344" width="32" height="32"/>
-  <object id="271" x="1760" y="1184" width="32" height="32"/>
-  <object id="272" x="1856" y="1024" width="32" height="32"/>
-  <object id="273" x="1888" y="928" width="32" height="32"/>
-  <object id="274" x="1792" y="864" width="32" height="32"/>
-  <object id="277" x="1888" y="1280" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="12" name="spawn_aliens">
-  <object id="279" x="1376" y="128" width="32" height="32"/>
-  <object id="280" x="1600" y="192" width="32" height="32"/>
-  <object id="281" x="960" y="288" width="32" height="32"/>
-  <object id="283" x="1856" y="224" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="10" name="spawn_player">
-  <object id="155" name="player_spawn" x="256" y="160" width="32" height="32"/>
+ <objectgroup id="11" name="layer_spawns">
+  <object id="278" name="laser_gun" x="576" y="96" width="32" height="32"/>
+  <object id="284" name="moon_berry" x="1568" y="576" width="32" height="32"/>
+  <object id="287" name="moon_berry" x="768" y="64" width="32" height="32"/>
+  <object id="297" name="player" x="256" y="160" width="32" height="32"/>
+  <object id="298" name="ant" x="800" y="672" width="32" height="32"/>
+  <object id="299" name="ant" x="192" y="608" width="32" height="32"/>
+  <object id="302" name="ant" x="416" y="640" width="32" height="32"/>
+  <object id="303" name="ant" x="1152" y="800" width="32" height="32"/>
+  <object id="304" name="ant" x="224" y="832" width="32" height="32"/>
+  <object id="305" name="ant" x="384" y="992" width="32" height="32"/>
+  <object id="306" name="ant" x="1376" y="928" width="32" height="32"/>
+  <object id="307" name="ant" x="1472" y="672" width="32" height="32"/>
+  <object id="308" name="ant" x="1376" y="1280" width="32" height="32"/>
+  <object id="309" name="ant" x="1184" y="1472" width="32" height="32"/>
+  <object id="311" name="ant" x="512" y="1376" width="32" height="32"/>
+  <object id="312" name="ant" x="416" y="1344" width="32" height="32"/>
+  <object id="313" name="ant" x="768" y="1824" width="32" height="32"/>
+  <object id="314" name="ant" x="992" y="1696" width="32" height="32"/>
+  <object id="315" name="ant" x="928" y="1952" width="32" height="32"/>
+  <object id="316" name="ant" x="1312" y="1792" width="32" height="32"/>
+  <object id="317" name="ant" x="1696" y="1760" width="32" height="32"/>
+  <object id="318" name="ant" x="192" y="1728" width="32" height="32"/>
+  <object id="319" name="ant" x="160" y="1920" width="32" height="32"/>
+  <object id="320" name="ant" x="448" y="1824" width="32" height="32"/>
+  <object id="321" name="ant" x="1856" y="1600" width="32" height="32"/>
+  <object id="322" name="ant" x="1824" y="1408" width="32" height="32"/>
+  <object id="323" name="ant" x="1920" y="1120" width="32" height="32"/>
+  <object id="325" name="ant" x="1760" y="832" width="32" height="32"/>
+  <object id="326" name="ant" x="1856" y="672" width="32" height="32"/>
+  <object id="327" name="ant" x="1856" y="992" width="32" height="32"/>
+  <object id="328" name="ant" x="1824" y="1280" width="32" height="32"/>
+  <object id="332" name="alien" x="1568" y="256" width="32" height="32"/>
+  <object id="333" name="alien" x="1280" y="160" width="32" height="32"/>
+  <object id="334" name="alien" x="1888" y="288" width="32" height="32"/>
+  <object id="335" name="alien" x="896" y="288" width="32" height="32"/>
  </objectgroup>
 </map>

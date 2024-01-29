@@ -1,13 +1,13 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:tile_map/world_object.dart';
+import 'package:tile_map/wall.dart';
 
-class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
+class BasicBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final double maxSpeed = 300.0;
 
   late Vector2 _direction;
 
-  Bullet(Vector2 position, Vector2 direction)
+  BasicBullet(Vector2 position, Vector2 direction)
       : super(position: position, size: Vector2(5, 5), anchor: Anchor.topLeft) {
     add(RectangleHitbox(size: Vector2(5, 5), position: Vector2(0, 0)));
     _direction = direction;
@@ -31,7 +31,7 @@ class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    if (other is WorldObject) {
+    if (other is Wall) {
       gameRef.world.remove(this);
     }
 

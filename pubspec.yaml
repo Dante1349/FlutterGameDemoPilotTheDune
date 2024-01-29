@@ -28,6 +28,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/tiles/testmap_ortho.tmx
+    - assets/tiles/alien_cave_1.tmx
     - assets/images/tileset-ortho.png
     - assets/images/pilot-spritesheet.png
     - assets/images/pilot-gun-spritesheet.png

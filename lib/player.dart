@@ -2,11 +2,13 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
-import 'package:tile_map/bullet.dart';
+import 'package:tile_map/items/projectiles/bullet_basic.dart';
+import 'package:tile_map/connection.dart';
 import 'package:tile_map/enemies/ant.dart';
 import 'package:tile_map/inventory.dart';
 import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
+import 'package:tile_map/main.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
@@ -131,8 +133,12 @@ class Player extends SpriteAnimationComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    if (other is Bullet) {
+    if (other is BasicBullet) {
       return;
+    } else if(other is Connection) {
+      (gameRef as TiledGame).loadLevel(other.targetMap);
+      return;
+
     } else if (other is LaserGun) {
       _inventory.addItem(other);
       loadAnimation();
@@ -165,7 +171,7 @@ class Player extends SpriteAnimationComponent
 
   void shoot() {
     if (_inventory.hasItem<LaserGun>() && life > 0) {
-      final bullet = Bullet(absoluteCenter, _lastDirection);
+      final bullet = BasicBullet(absoluteCenter, _lastDirection);
       gameRef.world.add(bullet);
     }
   }

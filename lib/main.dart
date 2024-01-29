@@ -1,17 +1,14 @@
 import 'dart:async';
 
-import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:tile_map/levels/level.dart';
 import 'package:tile_map/levels/test-level.dart';
 import 'package:tile_map/overlays/game_over.overlay.dart';
 import 'package:tile_map/overlays/inventory.overlay.dart';
 import 'package:tile_map/overlays/pause.overlay.dart';
-import 'package:tile_map/ui/screen_input.dart';
 import 'package:tile_map/ui/user_interface.dart';
 
 void main() {
@@ -45,6 +42,13 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     await userInterface.load();
 
     level = TestLevel(userInterface);
+    add(level);
+    await level.load();
+  }
+
+  loadLevel(String targetMap) async {
+    level.destroy();
+    level = Level(targetMap, userInterface);
     add(level);
     await level.load();
   }
