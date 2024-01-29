@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:tile_map/alien.dart';
 import 'package:tile_map/enemies/ant.dart';
+import 'package:tile_map/items/item.dart';
 import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
 import 'package:tile_map/player.dart';
@@ -13,26 +12,49 @@ import 'package:tile_map/world_object.dart';
 class Level extends Component with HasGameRef {
   final String mapPath;
   final ScreenInput screenInput;
+  
+  bool gameOver = false;
+  List<Item> items = [];
+  
   late TiledComponent mapComponent;
   late Player player;
 
-  List<Component> items = List.empty();
-
   Level(this.mapPath, this.screenInput);
 
-  @override
-  Future<FutureOr<void>> onLoad() async {
+  load() async {
+    print(mapPath);
     mapComponent = await TiledComponent.load(mapPath, Vector2(32, 32));
 
     gameRef.world.add(mapComponent);
+    gameRef.add(screenInput);
+
+    spawnObjects(mapComponent.tileMap);
+    spawnPlayer(mapComponent.tileMap);
+    spawnNPCs(mapComponent.tileMap);
+    spawnItems(mapComponent.tileMap);
+    spawnEnemies(mapComponent.tileMap);
 
     gameRef.camera.viewfinder.anchor = Anchor.center;
     gameRef.camera.viewfinder.zoom = 2;
   }
 
+  @override
+  update(double dt) {
+    super.update(dt);
+    if (player.life <= 0 && !gameOver) {
+      gameOver = true;
+      gameRef.overlays.add('GameOver');
+    }
+  }
+
   destroy() {
     gameRef.world.remove(mapComponent);
-    gameRef.world.remove(player);
+    gameRef.remove(screenInput);
+    gameRef.remove(this);
+
+    if(gameRef.world.contains(player)){
+      gameRef.world.remove(player);
+    }
   }
 
   void spawnPlayer(RenderableTiledMap tileMap) async {
@@ -69,7 +91,7 @@ class Level extends Component with HasGameRef {
 
   void spawnItems(RenderableTiledMap tileMap) {
     final objectGroup = tileMap.getLayer<ObjectGroup>("spawn_items");
-    items = List.empty();
+    items = [];
     for (TiledObject tile in objectGroup!.objects) {
       switch (tile.name) {
         case 'laser_gun_spawn':

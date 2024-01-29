@@ -28,8 +28,8 @@ class GameOverOverlay extends StatelessWidget {
           ElevatedButton(
             onPressed: () => {
               print('Restart'),
+              _game.overlays.remove('GameOver'),
               _game.restartGame(),
-              _game.overlays.remove('GameOver')
             },
             child: Text('Restart'),
           ),

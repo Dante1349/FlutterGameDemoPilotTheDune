@@ -2,8 +2,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
-import 'package:tile_map/enemies/ant.dart';
 import 'package:tile_map/bullet.dart';
+import 'package:tile_map/enemies/ant.dart';
 import 'package:tile_map/inventory.dart';
 import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
@@ -88,7 +88,7 @@ class Player extends SpriteAnimationComponent
   @override
   void update(double dt) {
     if (life <= 0) {
-      game.world.remove(this);
+      gameRef.world.remove(this);
     }
     if (!joystick.delta.isZero() && activeCollisions.isEmpty) {
       _lastDirection = joystick.relativeDelta;
@@ -140,7 +140,7 @@ class Player extends SpriteAnimationComponent
       return;
     } else if (other is Ant) {
       life -= 25.0;
-    } else if (other is MoonBerry){
+    } else if (other is MoonBerry) {
       life += 10.0;
       if (life > 100.0) {
         life = 100.0;
