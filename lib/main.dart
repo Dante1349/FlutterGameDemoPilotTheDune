@@ -44,7 +44,7 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
 
   final logger = Logger('main.dart');
 
-  late Player _player;
+  late Player player;
   late LifeBar _lifeBar;
 
   final List<Item> _items = [];
@@ -84,17 +84,17 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     spawnAnts(mapComponent.tileMap);
 
     yButtonSubscription = screenInput.yButton.listen((event) {
-      _player.shoot();
+      player.shoot();
     });
 
     xButtonSubscription = screenInput.xButton.listen((event) {
-      _player.shoot();
+      player.shoot();
     });
 
     camera.viewfinder.anchor = Anchor.center;
     camera.viewfinder.zoom = 2;
 
-    _lifeBar = LifeBar(_player.life);
+    _lifeBar = LifeBar(player.life);
     _lifeBar.position = Vector2(10, 10);
 
     camera.viewport.addAll([_lifeBar]);
@@ -128,8 +128,8 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    _lifeBar.percentage = _player.life;
-    if (_player.life <= 0) {
+    _lifeBar.percentage = player.life;
+    if (player.life <= 0) {
       overlays.add('GameOver');
     }
   }
@@ -139,9 +139,9 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
     final startTile = objectGroup!.objects.first;
     final startPosition = Vector2(startTile.x, startTile.y);
 
-    _player = Player(screenInput.joystick, startPosition);
-    world.add(_player);
-    camera.follow(_player);
+    player = Player(screenInput.joystick, startPosition);
+    world.add(player);
+    camera.follow(player);
   }
 
   void spawnItems(RenderableTiledMap tileMap) {
@@ -200,6 +200,10 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   }
 
   Player getPlayer() {
-    return _player;
+    return player;
+  }
+
+  setPlayer(Player player) {
+    this.player = player;
   }
 }
