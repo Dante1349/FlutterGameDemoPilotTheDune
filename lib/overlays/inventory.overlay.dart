@@ -29,7 +29,7 @@ class InventoryOverlay extends StatelessWidget {
                 children: [
                   TableRow(
                     children: 
-                        _game.getLevel().player.getInventory().items.map((item) {
+                        _game.level.player.getInventory().items.map((item) {
                       return Image.asset("images/${item.spritePath}", width: 32, height: 32);
                     }).toList(),
                   ),

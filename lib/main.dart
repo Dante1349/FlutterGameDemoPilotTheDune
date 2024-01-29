@@ -12,6 +12,7 @@ import 'package:tile_map/overlays/game_over.overlay.dart';
 import 'package:tile_map/overlays/inventory.overlay.dart';
 import 'package:tile_map/overlays/pause.overlay.dart';
 import 'package:tile_map/ui/screen_input.dart';
+import 'package:tile_map/ui/user_interface.dart';
 
 void main() {
   runApp(
@@ -29,7 +30,7 @@ void main() {
 }
 
 class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
-  late ScreenInput screenInput;
+  late UserInterface userInterface;
   late Level level;
 
   @override
@@ -39,11 +40,11 @@ class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
 
     // super.debugMode=true;
 
-    screenInput = ScreenInput();
-    add(screenInput);
-    await screenInput.load();
+    userInterface = UserInterface();
+    add(userInterface);
+    await userInterface.load();
 
-    level = TestLevel(screenInput);
+    level = TestLevel(userInterface);
     add(level);
     await level.load();
   }

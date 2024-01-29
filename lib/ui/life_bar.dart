@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 class LifeBar extends PositionComponent {
   double percentage;
 
-  LifeBar(this.percentage) : super(size: Vector2(200, 20));
+  LifeBar(this.percentage) : super(size: Vector2(200, 20), position: Vector2(10, 10));
 
   @override
   void render(Canvas canvas) {

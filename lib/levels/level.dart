@@ -9,11 +9,12 @@ import 'package:tile_map/items/laser_gun.dart';
 import 'package:tile_map/items/moon_berry.dart';
 import 'package:tile_map/player.dart';
 import 'package:tile_map/ui/screen_input.dart';
+import 'package:tile_map/ui/user_interface.dart';
 import 'package:tile_map/world_object.dart';
 
 class Level extends Component with HasGameRef {
   final String mapPath;
-  final ScreenInput screenInput;
+  final UserInterface userInterface;
 
   bool gameOver = false;
   List<Item> items = [];
@@ -21,18 +22,14 @@ class Level extends Component with HasGameRef {
   late TiledComponent mapComponent;
   late Player player;
 
-  late StreamSubscription<void> yButtonSubscription;
-  
-  late StreamSubscription<void> xButtonSubscription;
-
-  Level(this.mapPath, this.screenInput);
+  Level(this.mapPath, this.userInterface);
 
   load() async {
     print(mapPath);
     mapComponent = await TiledComponent.load(mapPath, Vector2(32, 32));
 
     gameRef.world.add(mapComponent);
-    gameRef.add(screenInput);
+    gameRef.add(userInterface);
 
     spawnObjects(mapComponent.tileMap);
     spawnPlayer(mapComponent.tileMap);
@@ -42,20 +39,12 @@ class Level extends Component with HasGameRef {
 
     gameRef.camera.viewfinder.anchor = Anchor.center;
     gameRef.camera.viewfinder.zoom = 2;
-
-    yButtonSubscription = screenInput.yButton.listen((event) {
-      print("yButton pressed");
-      player.shoot();
-    });
-
-    xButtonSubscription = screenInput.xButton.listen((event) {
-      print("xButton pressed");
-    });
   }
 
   @override
   update(double dt) {
     super.update(dt);
+    userInterface.lifeBar.percentage = player.life;
     if (player.life <= 0 && !gameOver) {
       gameOver = true;
       gameRef.overlays.add('GameOver');
@@ -63,8 +52,6 @@ class Level extends Component with HasGameRef {
   }
 
   destroy() {
-    yButtonSubscription.cancel();
-    xButtonSubscription.cancel();
     for (var element in gameRef.world.children) {
       gameRef.world.remove(element);
     }
@@ -75,7 +62,7 @@ class Level extends Component with HasGameRef {
     final startTile = objectGroup!.objects.first;
     final startPosition = Vector2(startTile.x, startTile.y);
 
-    player = Player(screenInput.joystick, startPosition);
+    player = Player(userInterface.screenInput.joystick, startPosition);
     gameRef.world.add(player);
     gameRef.camera.follow(player);
   }
