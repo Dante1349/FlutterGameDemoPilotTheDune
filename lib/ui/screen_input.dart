@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
@@ -20,11 +21,28 @@ class ScreenInput extends Component with HasGameRef {
 
   late SpriteComponent knob;
   late SpriteComponent background;
-  late JoystickComponent joystick;
+  late JoystickComponent _joystick;
+  late Vector2 joystickDirection;
   late SpriteButtonComponent xButtonSpriteComponent;
   late SpriteButtonComponent yButtonSpriteComponent;
   late SpriteButtonComponent pauseButtonSpriteComponent;
   late SpriteButtonComponent inventoryButtonSpriteComponent;
+
+  @override
+  update(double dt) {
+    joystickDirection = normalizeTo8Directions(_joystick.relativeDelta);
+  }
+
+Vector2 normalizeTo8Directions(Vector2 delta) {
+  // Normalize the input vector
+    Vector2 normalizedDelta = Vector2(delta.x, delta.y)..normalize();
+
+    // Round the components to -1, 0, or 1
+    double x = (normalizedDelta.x / 0.7071).roundToDouble(); // 0.7071 is approximately 1/sqrt(2)
+    double y = (normalizedDelta.y / 0.7071).roundToDouble();
+
+    return Vector2(x, y).normalized();
+}
 
   load() async {
     xButton = xButtonStreamController.stream;
@@ -39,20 +57,18 @@ class ScreenInput extends Component with HasGameRef {
       rows: 2,
     );
 
-    background = SpriteComponent(
-        sprite: sheet.getSpriteById(0),
-        size: Vector2(32, 32));
+    background =
+        SpriteComponent(sprite: sheet.getSpriteById(0), size: Vector2(32, 32));
 
-    knob = SpriteComponent(
-        sprite: sheet.getSpriteById(1),
-        size: Vector2(32, 32));
+    knob =
+        SpriteComponent(sprite: sheet.getSpriteById(1), size: Vector2(32, 32));
 
-    joystick = JoystickComponent(
+    _joystick = JoystickComponent(
       knob: knob,
       background: background,
       position: Vector2(100, gameRef.camera.viewport.size.y - 100),
     );
-    joystick.scale=Vector2(4,4);
+    _joystick.scale = Vector2(4, 4);
     xButtonSpriteComponent = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
         buttonDown: sheet.getSpriteById(14),
@@ -94,7 +110,7 @@ class ScreenInput extends Component with HasGameRef {
         inventoryButtonSpriteComponent.height * 2;
 
     gameRef.camera.viewport.addAll([
-      joystick,
+      _joystick,
       xButtonSpriteComponent,
       yButtonSpriteComponent,
       pauseButtonSpriteComponent,
@@ -108,7 +124,7 @@ class ScreenInput extends Component with HasGameRef {
     pauseButtonStreamController.close();
     inventoryButtonStreamController.close();
     gameRef.camera.viewport.removeAll([
-      joystick,
+      _joystick,
       xButtonSpriteComponent,
       yButtonSpriteComponent,
       pauseButtonSpriteComponent,

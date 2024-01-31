@@ -44,8 +44,9 @@ class Level extends Component with HasGameRef {
       gameOver = true;
       gameRef.overlays.add('GameOver');
     } else {
-      player.direction = userInterface.screenInput.joystick.relativeDelta;
+      player.direction = userInterface.screenInput.joystickDirection;
       player.direction.add(userInterface.keyboardInput.keyboardDirection);
+      player.direction.normalize();
     }
   }
 
@@ -71,7 +72,7 @@ class Level extends Component with HasGameRef {
       var position = Vector2(tile.x, tile.y);
       switch (tile.name) {
         case 'player':
-          player = Player(userInterface.screenInput.joystick, position);
+          player = Player(position);
           gameRef.world.add(player);
           gameRef.camera.follow(player);
           break;

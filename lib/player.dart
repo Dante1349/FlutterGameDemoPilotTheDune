@@ -31,9 +31,8 @@ class Player extends SpriteAnimationComponent
   late SpriteAnimation playerAnimationRight;
   late SpriteAnimation playerAnimationDown;
 
-  final JoystickComponent joystick;
 
-  Player(this.joystick, Vector2 startPosition)
+  Player(Vector2 startPosition)
       : super(
             size: Vector2.all(32.0),
             anchor: Anchor.topLeft,

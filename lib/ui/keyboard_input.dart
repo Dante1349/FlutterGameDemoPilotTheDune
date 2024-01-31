@@ -30,16 +30,16 @@ class KeyboardInput extends Component with KeyboardHandler {
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (keysPressed.containsAll(
         [LogicalKeyboardKey.keyA, LogicalKeyboardKey.keyW])) {
-      keyboardDirection = Vector2(-0.75, -0.75);
+      keyboardDirection = Vector2(-1, -1);
     } else if (keysPressed.containsAll(
         [LogicalKeyboardKey.keyA, LogicalKeyboardKey.keyS])) {
-      keyboardDirection = Vector2(-0.75, 0.75);
+      keyboardDirection = Vector2(-1, 1);
     } else if (keysPressed.containsAll(
         [LogicalKeyboardKey.keyD, LogicalKeyboardKey.keyW])) {
-      keyboardDirection = Vector2(0.75, -0.75);
+      keyboardDirection = Vector2(1, -1);
     } else if (keysPressed.containsAll(
         [LogicalKeyboardKey.keyD, LogicalKeyboardKey.keyS])) {
-      keyboardDirection = Vector2(0.75, 0.75);
+      keyboardDirection = Vector2(1, 1);
     } else if (keysPressed.contains(LogicalKeyboardKey.keyA)) {
       keyboardDirection = Vector2(-1, 0);
     } else if (keysPressed.contains(LogicalKeyboardKey.keyD)) {
@@ -51,6 +51,7 @@ class KeyboardInput extends Component with KeyboardHandler {
     } else {
       keyboardDirection = Vector2.zero();
     }
+    keyboardDirection =keyboardDirection.normalized();
 
     if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
       xButtonStreamController.add(null);
