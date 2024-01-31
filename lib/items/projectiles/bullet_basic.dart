@@ -1,6 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:tile_map/wall.dart';
+import 'package:pilot_the_dune/wall.dart';
 
 class BasicBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final double maxSpeed = 300.0;

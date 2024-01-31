@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:tile_map/connection.dart';
-import 'package:tile_map/levels/level.dart';
+import 'package:pilot_the_dune/connection.dart';
+import 'package:pilot_the_dune/levels/level.dart';
 
 class TestLevel extends Level {
   TestLevel(screenInput) : super('testmap_ortho.tmx', screenInput);

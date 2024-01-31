@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:tile_map/main.dart';
-import 'package:tile_map/ui/life_bar.dart';
-import 'package:tile_map/ui/screen_input.dart';
+import 'package:pilot_the_dune/main.dart';
+import 'package:pilot_the_dune/ui/life_bar.dart';
+import 'package:pilot_the_dune/ui/screen_input.dart';
 
 class UserInterface extends Component with HasGameRef {
   final ScreenInput screenInput;
@@ -21,7 +21,7 @@ class UserInterface extends Component with HasGameRef {
     await screenInput.load();
     gameRef.camera.viewport.add(lifeBar);
 
-    TiledGame ref = gameRef as TiledGame;
+    PilotTheDuneGame ref = gameRef as PilotTheDuneGame;
     
     yButtonSubscription = screenInput.yButton.listen((event) {
       print("yButton pressed");

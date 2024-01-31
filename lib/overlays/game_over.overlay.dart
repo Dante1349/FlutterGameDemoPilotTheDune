@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tile_map/main.dart';
+import 'package:pilot_the_dune/main.dart';
 
 class GameOverOverlay extends StatelessWidget {
-  late TiledGame _game;
+  late PilotTheDuneGame _game;
 
-  GameOverOverlay(TiledGame game) {
+  GameOverOverlay(PilotTheDuneGame game) {
     _game = game;
   }
 
@@ -24,14 +24,14 @@ class GameOverOverlay extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => {
               print('Restart'),
               _game.overlays.remove('GameOver'),
               _game.restartGame(),
             },
-            child: Text('Restart'),
+            child: const Text('Restart'),
           ),
         ],
       )

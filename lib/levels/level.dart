@@ -1,12 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:tile_map/alien.dart';
-import 'package:tile_map/enemies/ant.dart';
-import 'package:tile_map/items/laser_gun.dart';
-import 'package:tile_map/items/moon_berry.dart';
-import 'package:tile_map/player.dart';
-import 'package:tile_map/ui/user_interface.dart';
-import 'package:tile_map/wall.dart';
+import 'package:pilot_the_dune/alien.dart';
+import 'package:pilot_the_dune/enemies/ant.dart';
+import 'package:pilot_the_dune/items/laser_gun.dart';
+import 'package:pilot_the_dune/items/moon_berry.dart';
+import 'package:pilot_the_dune/player.dart';
+import 'package:pilot_the_dune/ui/user_interface.dart';
+import 'package:pilot_the_dune/wall.dart';
 
 class Level extends Component with HasGameRef {
   final String mapPath;

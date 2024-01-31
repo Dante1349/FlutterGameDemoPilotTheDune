@@ -1,20 +1,22 @@
+import 'dart:ui';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
-import 'package:tile_map/items/projectiles/bullet_basic.dart';
-import 'package:tile_map/connection.dart';
-import 'package:tile_map/enemies/ant.dart';
-import 'package:tile_map/inventory.dart';
-import 'package:tile_map/items/laser_gun.dart';
-import 'package:tile_map/items/moon_berry.dart';
-import 'package:tile_map/main.dart';
+import 'package:pilot_the_dune/items/projectiles/bullet_basic.dart';
+import 'package:pilot_the_dune/connection.dart';
+import 'package:pilot_the_dune/enemies/ant.dart';
+import 'package:pilot_the_dune/inventory.dart';
+import 'package:pilot_the_dune/items/laser_gun.dart';
+import 'package:pilot_the_dune/items/moon_berry.dart';
+import 'package:pilot_the_dune/main.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
   final logger = Logger('player.dart');
 
-  Inventory _inventory = Inventory();
+  final Inventory _inventory = Inventory();
 
   /// Pixels/s
   double maxSpeed = 150.0;
@@ -47,7 +49,7 @@ class Player extends SpriteAnimationComponent
   }
 
   Future<void> loadAnimation() async {
-    var image;
+    Image image;
     if (_inventory.hasItem<LaserGun>()) {
       image = await game.images.load('pilot-gun-spritesheet.png');
     } else {
@@ -136,7 +138,7 @@ class Player extends SpriteAnimationComponent
     if (other is BasicBullet) {
       return;
     } else if(other is Connection) {
-      (gameRef as TiledGame).loadLevel(other.targetMap);
+      (gameRef as PilotTheDuneGame).loadLevel(other.targetMap);
       return;
 
     } else if (other is LaserGun) {

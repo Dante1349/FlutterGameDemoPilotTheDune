@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:tile_map/items/item.dart';
+import 'package:pilot_the_dune/items/item.dart';
 
 class LaserGun extends Item {
   LaserGun(Vector2 position) : super(position, 'laser-gun.png', 1, 1);

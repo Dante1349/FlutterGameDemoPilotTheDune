@@ -1,4 +1,4 @@
-name: tile_map
+name: pilot_the_dune
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -16,7 +16,6 @@ dependencies:
   logging: ^1.2.0
   joystick: ^1.0.0
   rxdart: ^0.27.7
-  
 
 dev_dependencies:
   flutter_test:

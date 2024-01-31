@@ -2,8 +2,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
-import 'package:tile_map/items/projectiles/bullet_basic.dart';
-import 'package:tile_map/player.dart';
+import 'package:pilot_the_dune/items/projectiles/bullet_basic.dart';
+import 'package:pilot_the_dune/player.dart';
 
 class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   final logger = Logger('ant.dart');

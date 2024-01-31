@@ -4,29 +4,29 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
-import 'package:tile_map/levels/level.dart';
-import 'package:tile_map/levels/test-level.dart';
-import 'package:tile_map/overlays/game_over.overlay.dart';
-import 'package:tile_map/overlays/inventory.overlay.dart';
-import 'package:tile_map/overlays/pause.overlay.dart';
-import 'package:tile_map/ui/user_interface.dart';
+import 'package:pilot_the_dune/levels/level.dart';
+import 'package:pilot_the_dune/levels/test_level.dart';
+import 'package:pilot_the_dune/overlays/game_over.overlay.dart';
+import 'package:pilot_the_dune/overlays/inventory.overlay.dart';
+import 'package:pilot_the_dune/overlays/pause.overlay.dart';
+import 'package:pilot_the_dune/ui/user_interface.dart';
 
 void main() {
   runApp(
     GameWidget(
-      game: TiledGame(),
+      game: PilotTheDuneGame(),
       overlayBuilderMap: {
-        'GameOver': (BuildContext context, TiledGame game) =>
+        'GameOver': (BuildContext context, PilotTheDuneGame game) =>
             GameOverOverlay(game),
-        'Pause': (BuildContext context, TiledGame game) => PauseOverlay(game),
-        'Inventory': (BuildContext context, TiledGame game) =>
+        'Pause': (BuildContext context, PilotTheDuneGame game) => PauseOverlay(game),
+        'Inventory': (BuildContext context, PilotTheDuneGame game) =>
             InventoryOverlay(game),
       },
     ),
   );
 }
 
-class TiledGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
+class PilotTheDuneGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
   late UserInterface userInterface;
   late Level level;
 

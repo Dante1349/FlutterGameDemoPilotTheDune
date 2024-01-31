@@ -1,9 +1,6 @@
-import 'package:tile_map/items/item.dart';
+import 'package:pilot_the_dune/items/item.dart';
 
 class Inventory {
-
-
-  Inventory(){}
 
   List<Item> items = [];
 

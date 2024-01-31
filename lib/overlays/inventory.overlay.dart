@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tile_map/main.dart';
+import 'package:pilot_the_dune/main.dart';
 
 class InventoryOverlay extends StatelessWidget {
-  late TiledGame _game;
+  late PilotTheDuneGame _game;
 
-  InventoryOverlay(TiledGame game) {
+  InventoryOverlay(PilotTheDuneGame game) {
     _game = game;
   }
 

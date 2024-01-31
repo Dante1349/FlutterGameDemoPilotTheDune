@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:tile_map/items/item.dart';
+import 'package:pilot_the_dune/items/item.dart';
 
 class MoonBerry extends Item {
   MoonBerry(Vector2 position) : super(position, 'moon-berry.png', 1, 0);
