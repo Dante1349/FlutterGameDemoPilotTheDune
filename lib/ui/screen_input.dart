@@ -53,7 +53,6 @@ class ScreenInput extends Component with HasGameRef {
       position: Vector2(100, gameRef.camera.viewport.size.y - 100),
     );
     joystick.scale=Vector2(4,4);
-
     xButtonSpriteComponent = SpriteButtonComponent(
         button: sheet.getSpriteById(5),
         buttonDown: sheet.getSpriteById(14),

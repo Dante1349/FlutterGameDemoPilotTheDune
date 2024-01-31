@@ -26,7 +26,7 @@ void main() {
   );
 }
 
-class PilotTheDuneGame extends FlameGame with KeyboardEvents, HasCollisionDetection {
+class PilotTheDuneGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDetection {
   late UserInterface userInterface;
   late Level level;
 

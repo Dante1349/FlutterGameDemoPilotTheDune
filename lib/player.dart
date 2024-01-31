@@ -22,6 +22,7 @@ class Player extends SpriteAnimationComponent
   double maxSpeed = 150.0;
   double life = 100.0;
   Vector2 _lastDirection = Vector2(1, 0);
+  Vector2 direction = Vector2(0, 0);
   late SpriteSheet _playerSpriteSheet;
 
   late SpriteAnimation playerAnimationIdle;
@@ -94,18 +95,13 @@ class Player extends SpriteAnimationComponent
     if (life <= 0) {
       gameRef.world.remove(this);
     }
-    if (!joystick.delta.isZero() && activeCollisions.isEmpty) {
-      _lastDirection = joystick.relativeDelta;
+    if (!direction.isZero() && activeCollisions.isEmpty) {
+      _lastDirection = direction;
 
-      final bool isUp = (joystick.direction == JoystickDirection.up ||
-          joystick.direction == JoystickDirection.upLeft ||
-          joystick.direction == JoystickDirection.upRight);
-
-      final bool isDown = (joystick.direction == JoystickDirection.down ||
-          joystick.direction == JoystickDirection.downLeft ||
-          joystick.direction == JoystickDirection.downRight);
-      final bool isLeft = joystick.direction == JoystickDirection.left;
-      final bool isRight = joystick.direction == JoystickDirection.right;
+      final bool isUp = direction.y < 0 && direction.x.abs() < direction.y.abs();
+      final bool isDown = direction.y > 0 && direction.x.abs() < direction.y.abs();
+      final bool isLeft = direction.x < 0 && direction.y.abs() < direction.x.abs();
+      final bool isRight = direction.x > 0 && direction.y.abs() < direction.x.abs();
 
       final bool animateUp = isUp && animation != playerAnimationUp;
 
@@ -126,7 +122,7 @@ class Player extends SpriteAnimationComponent
         animation = playerAnimationRight;
       }
 
-      position.add(joystick.relativeDelta * maxSpeed * dt);
+      position.add(direction * maxSpeed * dt);
     }
   }
 

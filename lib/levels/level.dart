@@ -39,10 +39,13 @@ class Level extends Component with HasGameRef {
     super.update(dt);
     await player.loaded;
     userInterface.lifeBar.percentage = player.life;
-    
+
     if (player.life <= 0 && !gameOver) {
       gameOver = true;
       gameRef.overlays.add('GameOver');
+    } else {
+      player.direction = userInterface.screenInput.joystick.relativeDelta;
+      player.direction.add(userInterface.keyboardInput.keyboardDirection);
     }
   }
 
@@ -75,7 +78,7 @@ class Level extends Component with HasGameRef {
         case 'alien':
           items.add(Alien(position));
           break;
-        case 'ant': 
+        case 'ant':
           items.add(Ant(position));
           break;
         case 'laser_gun':
