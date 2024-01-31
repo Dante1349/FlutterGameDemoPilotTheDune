@@ -32,6 +32,8 @@ class UserInterface extends Component with HasGameRef {
     gameRef.camera.viewport.add(lifeBar);
 
     PilotTheDuneGame ref = gameRef as PilotTheDuneGame;
+
+    // screen input
     
     yButtonSubscription = screenInput.yButton.listen((event) {
       print("yButton pressed");
