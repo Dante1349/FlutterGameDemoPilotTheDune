@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:pilot_the_dune/alien.dart';
+import 'package:pilot_the_dune/npcs/alien.dart';
 import 'package:pilot_the_dune/enemies/ant.dart';
 import 'package:pilot_the_dune/items/laser_gun.dart';
 import 'package:pilot_the_dune/items/moon_berry.dart';
@@ -31,7 +31,7 @@ class Level extends Component with HasGameRef {
     spawnWalls(mapComponent.tileMap);
 
     gameRef.camera.viewfinder.anchor = Anchor.center;
-    gameRef.camera.viewfinder.zoom = 2;
+    gameRef.camera.viewfinder.zoom = 1.5;
   }
 
   @override

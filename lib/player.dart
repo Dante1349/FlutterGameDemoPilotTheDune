@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
+import 'package:pilot_the_dune/enemies/enemy.dart';
 import 'package:pilot_the_dune/items/projectiles/bullet_basic.dart';
 import 'package:pilot_the_dune/connection.dart';
 import 'package:pilot_the_dune/enemies/ant.dart';
@@ -11,12 +12,14 @@ import 'package:pilot_the_dune/inventory.dart';
 import 'package:pilot_the_dune/items/laser_gun.dart';
 import 'package:pilot_the_dune/items/moon_berry.dart';
 import 'package:pilot_the_dune/main.dart';
+import 'package:pilot_the_dune/wall.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef, CollisionCallbacks {
   final logger = Logger('player.dart');
 
   final Inventory _inventory = Inventory();
+  final bool godModeActive = true;
 
   /// Pixels/s
   double maxSpeed = 150.0;
@@ -103,11 +106,8 @@ class Player extends SpriteAnimationComponent
       final bool isRight = direction.x > 0 && direction.y.abs() < direction.x.abs();
 
       final bool animateUp = isUp && animation != playerAnimationUp;
-
       final bool animateDown = isDown && animation != playerAnimationDown;
-
       final bool animateLeft = isLeft && animation != playerAnimationLeft;
-
       final bool animateRight = isRight && animation != playerAnimationRight;
 
       super.update(dt);
@@ -130,12 +130,15 @@ class Player extends SpriteAnimationComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
+    if ((other is Enemy || other is Wall) && godModeActive) {
+      return;
+    } 
+
     if (other is BasicBullet) {
       return;
     } else if(other is Connection) {
       (gameRef as PilotTheDuneGame).loadLevel(other.targetMap);
       return;
-
     } else if (other is LaserGun) {
       _inventory.addItem(other);
       loadAnimation();
