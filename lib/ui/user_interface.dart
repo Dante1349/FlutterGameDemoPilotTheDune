@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:flame/components.dart';
 import 'package:pilot_the_dune/main.dart';
