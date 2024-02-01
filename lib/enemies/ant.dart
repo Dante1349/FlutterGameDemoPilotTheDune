@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:logging/logging.dart';
 import 'package:pilot_the_dune/items/projectiles/bullet_basic.dart';
+import 'package:pilot_the_dune/main.dart';
 import 'package:pilot_the_dune/player.dart';
+import 'package:pilot_the_dune/wall.dart';
 
 class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   final logger = Logger('ant.dart');
@@ -16,8 +20,16 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   late SpriteAnimation antAnimationDown;
   late SpriteAnimation antAnimationLeft;
 
-  bool movingToX = true;
-  bool movingToY = true;
+  static const double speed = 100.0; // Adjust the speed as needed
+  static const double followRadius =
+      150.0; // Radius to start following the player
+  static const double changeDirectionInterval =
+      2.0; // Change direction every 2 seconds
+
+  bool isFollowingPlayer = false;
+  Vector2 randomDirection = Vector2(1.0, 0.0)
+    ..rotate(Random().nextInt(8) * (pi / 4.0));
+  double changeDirectionTimer = 0.0;
 
   Ant(Vector2 startPosition)
       : super(
@@ -69,25 +81,32 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
 
   @override
   void update(double dt) {
-    if (true) {
-      if (movingToX) {
-        x += 1;
-        animation = antAnimationRight;
-      } else {
-        x -= 1;
-        animation = antAnimationLeft;
-      }
-    } else {
-      if (movingToY) {
-        y += 1;
-        animation = antAnimationDown;
-      } else {
-        y -= 1;
-        animation = antAnimationUp;
-      }
-    }
-
     super.update(dt);
+
+    // Check if player is still within follow radius
+    double distanceToPlayer = (gameRef as PilotTheDuneGame)
+        .level
+        .player
+        .position
+        .distanceTo(position);
+    if (distanceToPlayer > followRadius) {
+      // Update the timer for changing direction
+      changeDirectionTimer += dt;
+
+      // Change direction after the specified interval
+      if (changeDirectionTimer >= changeDirectionInterval) {
+        // Change the direction to a multiple of 45 degrees
+        int randomAngleIndex = Random().nextInt(8);
+        randomDirection = Vector2(1.0, 0.0)
+          ..rotate(randomAngleIndex * (pi / 4.0));
+
+        // Reset the timer
+        changeDirectionTimer = 0.0;
+      }
+      moveRandomly(dt);
+    } else {
+      moveTowardsPlayer(dt);
+    }
   }
 
   @override
@@ -99,10 +118,11 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
       gameRef.world.remove(this);
     } else if (other is Player) {
       return;
+    } else if (other is Wall) {
+      randomDirection = Vector2(1.0, 0.0)
+        ..rotate(Random().nextInt(8) * (pi / 4.0));
     }
 
-    movingToX = !movingToX;
-    movingToY = !movingToY;
     if (intersectionPoints.length == 2) {
       final mid =
           (intersectionPoints.elementAt(0) + intersectionPoints.elementAt(1)) /
@@ -115,5 +135,58 @@ class Ant extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
       position += collisionVector.scaled(penetrationDepth);
     }
     super.onCollisionStart(intersectionPoints, other);
+  }
+
+  void moveRandomly(double dt) {
+    // Move in the current random direction
+    position += randomDirection * speed * dt;
+
+    // Update the animation based on the direction of movement
+    updateAnimation(randomDirection);
+  }
+
+  void moveTowardsPlayer(double dt) {
+    // Implement player-following movement logic here
+    // You can use Flame's Vector2 class for movement
+    var playerPosition = (gameRef as PilotTheDuneGame).level.player.position;
+    Vector2 direction = playerPosition - position;
+    direction.normalize();
+    position += direction * speed * dt;
+
+    // Update the animation based on the direction of movement
+    updateAnimation(direction);
+  }
+
+  void updateAnimation(Vector2 direction) {
+    final bool isUp = direction.y < 0 && direction.x.abs() < direction.y.abs();
+      final bool isDown = direction.y > 0 && direction.x.abs() < direction.y.abs();
+      final bool isLeft = direction.x < 0 && direction.y.abs() < direction.x.abs();
+      final bool isRight = direction.x > 0 && direction.y.abs() < direction.x.abs();
+
+      final bool animateUp = isUp && animation != antAnimationUp;
+
+      final bool animateDown = isDown && animation != antAnimationDown;
+
+      final bool animateLeft = isLeft && animation != antAnimationLeft;
+
+      final bool animateRight = isRight && animation != antAnimationRight;
+
+      if (animateUp) {
+        animation = antAnimationUp;
+      } else if (animateDown) {
+        animation = antAnimationDown;
+      } else if (animateLeft) {
+        animation = antAnimationLeft;
+      } else if (animateRight) {
+        animation = antAnimationRight;
+      }
+  }
+
+  void startFollowingPlayer(Vector2 playerPosition) {
+    isFollowingPlayer = true;
+  }
+
+  void stopFollowingPlayer() {
+    isFollowingPlayer = false;
   }
 }

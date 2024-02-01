@@ -38,8 +38,8 @@ Vector2 normalizeTo8Directions(Vector2 delta) {
     Vector2 normalizedDelta = Vector2(delta.x, delta.y)..normalize();
 
     // Round the components to -1, 0, or 1
-    double x = (normalizedDelta.x / 0.7071).roundToDouble(); // 0.7071 is approximately 1/sqrt(2)
-    double y = (normalizedDelta.y / 0.7071).roundToDouble();
+    double x = (normalizedDelta.x / (1/sqrt2)).roundToDouble();
+    double y = (normalizedDelta.y / (1/sqrt2)).roundToDouble();
 
     return Vector2(x, y).normalized();
 }
