@@ -19,7 +19,7 @@ class Player extends SpriteAnimationComponent
   final logger = Logger('player.dart');
 
   final Inventory _inventory = Inventory();
-  final bool godModeActive = true;
+  final bool godModeActive = false;
 
   /// Pixels/s
   double maxSpeed = 150.0;
@@ -33,6 +33,11 @@ class Player extends SpriteAnimationComponent
   late SpriteAnimation playerAnimationLeft;
   late SpriteAnimation playerAnimationRight;
   late SpriteAnimation playerAnimationDown;
+  
+  late SpriteAnimation playerAnimationUpRight;
+  late SpriteAnimation playerAnimationDownRight;
+  late SpriteAnimation playerAnimationDownLeft;
+  late SpriteAnimation playerAnimationUpLeft;
 
 
   Player(Vector2 startPosition)
@@ -54,14 +59,14 @@ class Player extends SpriteAnimationComponent
   Future<void> loadAnimation() async {
     Image image;
     if (_inventory.hasItem<LaserGun>()) {
-      image = await game.images.load('pilot-gun-spritesheet.png');
+      image = await game.images.load('test8x4.png');
     } else {
-      image = await game.images.load('pilot-spritesheet.png');
+      image = await game.images.load('character_animation_default.png');
     }
     _playerSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
       columns: 4,
-      rows: 4,
+      rows: 8,
     );
 
     playerAnimationUp = _playerSpriteSheet.createAnimation(
@@ -70,21 +75,45 @@ class Player extends SpriteAnimationComponent
       from: 1,
       to: 4,
     );
-    playerAnimationRight = _playerSpriteSheet.createAnimation(
+    playerAnimationUpRight = _playerSpriteSheet.createAnimation(
       stepTime: .1,
       row: 1,
       from: 1,
       to: 4,
     );
-    playerAnimationDown = _playerSpriteSheet.createAnimation(
+    playerAnimationRight = _playerSpriteSheet.createAnimation(
       stepTime: .1,
       row: 2,
       from: 1,
       to: 4,
     );
-    playerAnimationLeft = _playerSpriteSheet.createAnimation(
+    playerAnimationDownRight = _playerSpriteSheet.createAnimation(
       stepTime: .1,
       row: 3,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationDown = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 4,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationDownLeft = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 5,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationLeft = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 6,
+      from: 1,
+      to: 4,
+    );
+    playerAnimationUpLeft = _playerSpriteSheet.createAnimation(
+      stepTime: .1,
+      row: 7,
       from: 1,
       to: 4,
     );
@@ -100,25 +129,42 @@ class Player extends SpriteAnimationComponent
     if (!direction.isZero() && activeCollisions.isEmpty) {
       _lastDirection = direction;
 
+
+      final bool isUpRight = direction.y < 0 && direction.x > 0;
+      final bool isDownRight = direction.y > 0 && direction.x > 0;
+      final bool isDownLeft = direction.y > 0 && direction.x < 0;
+      final bool isUpLeft = direction.y < 0 && direction.x < 0;
       final bool isUp = direction.y < 0 && direction.x.abs() < direction.y.abs();
       final bool isDown = direction.y > 0 && direction.x.abs() < direction.y.abs();
       final bool isLeft = direction.x < 0 && direction.y.abs() < direction.x.abs();
       final bool isRight = direction.x > 0 && direction.y.abs() < direction.x.abs();
 
       final bool animateUp = isUp && animation != playerAnimationUp;
+      final bool animateUpRight = isUpRight && animation != playerAnimationUpRight;
       final bool animateDown = isDown && animation != playerAnimationDown;
+      final bool animateDownRight = isDownRight && animation != playerAnimationDownRight;
       final bool animateLeft = isLeft && animation != playerAnimationLeft;
+      final bool animateDownLeft = isDownLeft && animation != playerAnimationDownLeft;
       final bool animateRight = isRight && animation != playerAnimationRight;
+      final bool animateUpLeft = isUpLeft && animation != playerAnimationUpLeft;
 
       super.update(dt);
       if (animateUp) {
         animation = playerAnimationUp;
+      } else if (animateUpRight) {
+        animation = playerAnimationUpRight;
+      }else if (animateRight ) {
+        animation = playerAnimationRight;
+      } else if (animateDownRight) {
+        animation = playerAnimationDownRight;
       } else if (animateDown) {
         animation = playerAnimationDown;
-      } else if (animateLeft) {
+      }else if (animateDownLeft) {
+        animation = playerAnimationDownLeft;
+      }else if (animateLeft) {
         animation = playerAnimationLeft;
-      } else if (animateRight) {
-        animation = playerAnimationRight;
+      }else if (animateUpLeft) {
+        animation = playerAnimationUpLeft;
       }
 
       position.add(direction * maxSpeed * dt);

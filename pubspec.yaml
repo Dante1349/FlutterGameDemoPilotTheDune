@@ -36,4 +36,6 @@ flutter:
     - assets/images/bullet_basic.png
     - assets/images/alien-spritesheet.png
     - assets/images/ant-spritesheet.png
+    - assets/images/text8x4.png
+    - assets/images/character_animation_default.png
     - assets/images/ui.png
